@@ -17,6 +17,10 @@ public class Main {
 	//static double[] serverTwo;
     static double calculatedPAR = 0.0;
     static double lowestPAR = 0.0;
+
+    static double calculatedVAR = 0.0;
+    static double lowestVAR = 0.0;
+
     static double[] optimizedFlexTwo;
     static double[] optimizedFlexOne;
 
@@ -61,22 +65,41 @@ public class Main {
             // Right shifting through 7 combinations of flexibleTwo
             for(int j = 0; j < flexTwoShift; j++) {
                 if ( j == 0 ) {
+
                     tempArray = addThreeArray(inflexible,tempFlexOne,tempFlexTwo);
+
                     calculatedPAR = calculatePAR(tempArray);
                     if ( lowestPAR == 0.0 )
                         lowestPAR = calculatedPAR;
                     else if ( calculatedPAR <= lowestPAR ) {
                         lowestPAR = calculatedPAR;
                     }
+
+                    calculatedVAR = calculateVAR(tempArray);
+                    if ( lowestVAR == 0.0 )
+                        lowestVAR = calculatedVAR;
+                    else if ( calculatedVAR <= lowestVAR ) {
+                        lowestVAR = calculatedVAR;
+                    }
+
                 } else {
                     tempFlexTwo = rightShiftArray(tempFlexTwo);
-                    tempArray = addThreeArray(inflexible,tempFlexOne,tempFlexTwo);
+                    tempArray = addThreeArray(inflexible, tempFlexOne, tempFlexTwo);
+
                     calculatedPAR = calculatePAR(tempArray);
                     if ( lowestPAR == 0.0 )
                         lowestPAR = calculatedPAR;
                     else if ( calculatedPAR <= lowestPAR ) {
                         lowestPAR = calculatedPAR;
                     }
+
+                    calculatedVAR = calculateVAR(tempArray);
+                    if ( lowestVAR == 0.0 )
+                        lowestVAR = calculatedVAR;
+                    else if ( calculatedVAR <= lowestVAR ) {
+                        lowestVAR = calculatedVAR;
+                    }
+
                 }
             }
             optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
@@ -85,6 +108,7 @@ public class Main {
         }
 
         System.out.println("Lowest PAR " + lowestPAR);
+        System.out.println("Lowest VAR " + lowestVAR);
         System.out.println(printArray(optimizedFlexOne));
         System.out.println(printArray(optimizedFlexTwo));
 
@@ -113,6 +137,31 @@ public class Main {
         calculatedPAR = loadArray[arrayLength - 1]/average;
 
         return calculatedPAR;
+    }
+
+    /**
+     * This method calculates the Variance of the array when given an array.
+     * @param loadArray
+     * @return calculatedVAR
+     */
+    private static double calculateVAR(double[] loadArray) {
+
+        double sum = 0.0;
+        double mean = 0.0;
+        double calculatedVAR = 0.0;
+        int arrayLength = loadArray.length;
+
+        for(int i = 0;i < arrayLength;i++) {
+            sum += loadArray[i];
+        }
+
+        mean = sum/arrayLength;
+
+        for(int i = 0;i< arrayLength;i++) {
+            calculatedVAR += Math.pow((loadArray[i] - mean),2);
+        }
+
+        return calculatedVAR/24; // formula for variance taken::http://mathworld.wolfram.com/SampleVariance.html
     }
 
     /**
