@@ -5,118 +5,81 @@ import java.util.logging.Logger;
 
 
 public class Main {
-	
-	static int[] inflexible;
-	static int[] flexibleOne;
-	static int[] flexibleTwo;
-	static int[] serverone;
-	static int[] servertwo;
-	static int[] total;
-	static int[] temp;
-	static int[] result;
-	static int[] zero;
-	static int[] temp2;
-    
-    public static void main(String[] args){
-    
-	
-    
-    inflexible = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
-    flexibleOne = new int[] {1,1,1};
-    flexibleTwo = new int[] {2,2,2};
-    
-    serverone = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
-    servertwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
-    
-    total = new int[] {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,0,0,0};
-    
-    temp = new int[24];
-    
-    zero = new int[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    
-    result = new int[24];
-    
-    temp2 = new int[24];
-    
-    result = zero;
-    
-    int StartTime=0;
-    int EndTime=0;
-    
-    int maxPeak = 100;
-    
-    int check;
-    
-    int check2;
-    
-    
-    
-    for (int i=16; i<24; i++){
-    	for (int counter=0; counter<flexibleTwo.length; counter++){ 
-    		temp = Arrays.copyOf(total, 24);
-    		check = i + counter;
-    		if (check<24){
-			int value= total[i+counter] + flexibleTwo[counter];
-			//System.out.println(total[i+counter]);
-			temp[i + counter] = value;
-    		}
-    		else {
-    			check = check-24;
-    			int value= total[check] + flexibleTwo[counter];
-    			//System.out.println("Total: " + total[check]);
-    			temp[check] = value;
-    		}
-    	}
-		
-    	for (int j=20; j<24; j++){
-    		for (int counter2=0; counter2<flexibleOne.length; counter2++){
-    			temp2=Arrays.copyOf(temp, 24);
-    			check2 = j+counter2;
-    			if (check2<24){
-    			int value= temp[j+counter2] + flexibleOne[counter2];
-    			temp2[j + counter2] = value;
-    			} 
-    			else {
-    				check2 = check2-24;
-    				int value= temp[check2] + flexibleOne[counter2];
-    				//System.out.println("Temp: " + temp[check2]);
-    				//System.out.println("Flexible: " + flexibleOne[counter2]);
-    				//System.out.println("Value: " + value);
-        			temp2[check2] = value;
-    			}
-    		}
-    		
-    		
-    		if (FindMax(temp2) < maxPeak){
-    			maxPeak = FindMax(temp2);
-    			System.out.println("Peak: " + maxPeak);
-    			result = Arrays.copyOf(temp2, 24);
-    			StartTime = j;
-    			System.out.println("Start: " + StartTime);
-    			EndTime = j + flexibleOne.length;
-    			System.out.println("End: " + EndTime);
-    		}
-    		
-    	}
-    	
-    }
-    
-    
-	}
-	
-	private static int FindMax(int[] array){
-		
-		int max = array[0];
 
-		for ( int i = 1; i < array.length; i++) {
-		    if ( array[i] > max) {
-		      max = array[i];
-		}
-		}
-		
-		
-		return max;
-	}
+	static double[] inflexible;
+	static double[] flexibleOne;
+	static double[] flexibleTwo;
+    static double[] flexibleThree;
+	//static double[] serverOne;
+	//static double[] serverTwo;
+    static double[] loadSum;
+    static double loadAverage;
+    static double calculatedPAR;
+
+    public static void main(String[] args) {
+
+    /**
+    * This section defines the power profiles of flexible and inflexible loads for computation.
+    * They are stored in 24 element-wide arrays with each array element as the power load for that hour.
+    */
+    inflexible = new double[] {2.01,1.76,1.76,1.76,1.76,1.76,3.26,4.81,0.56,0.26,0.16,0.16,0.16,0.16,0.16,0.16,0.16,1.76,2.06,0.56,0.71,0.71,2.31,4.81}; // power profile for inflexible loads
+    flexibleOne = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0};
+    flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
+    
+    //serverone = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
+    //servertwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
+
+    calculatePAR(inflexible);
+    addArray(flexibleOne,flexibleTwo);
+
+    }
+
+    /**
+     * This method calculates the PAR of the array when given an array.
+     * @param loadArray
+     * @return calculatedPAR
+     */
+    private static double calculatePAR(double[] loadArray) {
+
+        double sum = 0.0;
+        double average = 0.0;
+        double calculatedPAR = 0.0;
+        int arrayLength = loadArray.length;
+
+        for(int i = 0;i < arrayLength;i++) {
+            sum += loadArray[i];
+        }
+
+        average = sum/arrayLength;
+        Arrays.sort(loadArray);
+
+        calculatedPAR = loadArray[arrayLength - 1]/average;
+
+        return calculatedPAR;
+    }
+
+    /**
+     * This method adds two array together and returns an array that is summed.
+     * @param array_1
+     * @param array_2
+     * @return array_sum
+     */
+    private static double[] addArray(double[] array_1, double[] array_2) {
+
+        double[] array_sum = new double[24]; // initialising an empty array
+        int arrayLength = 24;
+
+        for(int i = 0;i < arrayLength; i++) {
+            array_sum[i] = array_1[i] + array_2[i];
+        }
+
+        return array_sum;
+
+    }
+
+
+
 }
 	
 
