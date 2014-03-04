@@ -10,28 +10,84 @@ public class Main {
 	static double[] flexibleOne;
 	static double[] flexibleTwo;
     static double[] flexibleThree;
+    static double[] tempArray;
+    static double[] tempFlexTwo;
+    static double[] tempFlexOne;
 	//static double[] serverOne;
 	//static double[] serverTwo;
-    static double calculatedPAR;
+    static double calculatedPAR = 0.0;
+    static double lowestPAR = 0.0;
+    static double[] optimizedFlexTwo;
+    static double[] optimizedFlexOne;
+
+    static int flexOneShift = 8; // flexibleOne can be rightShifted 8 times
+    static int flexTwoShift = 7; // flexibleTwo can be rightShifted 7 times
+    static int flexThreeShift = 7; // flexibleThree can be rightShifted 7 times
+
 
     public static void main(String[] args) {
 
     /**
     * This section defines the power profiles of flexible and inflexible loads for computation.
     * They are stored in 24 element-wide arrays with each array element as the power load for that hour.
+    * These configurations are used as reference and should not be changed!
     */
     inflexible = new double[] {2.01,1.76,1.76,1.76,1.76,1.76,3.26,4.81,0.56,0.26,0.16,0.16,0.16,0.16,0.16,0.16,0.16,1.76,2.06,0.56,0.71,0.71,2.31,4.81}; // power profile for inflexible loads
     flexibleOne = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0};
     flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
 
-    
-    //serverone = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
-    //servertwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
 
-    calculatePAR(inflexible);
-    addArray(flexibleOne,flexibleTwo);
-    rightShiftArray(flexibleThree);
+    tempArray = new double[24];
+    tempFlexTwo = new double[24];
+    tempFlexOne = new double[24];
+
+    tempFlexTwo = Arrays.copyOf(flexibleTwo,24);
+    tempFlexOne = Arrays.copyOf(flexibleOne,24);
+    //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
+    //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
+
+        /**
+         * This loop finds the lowest PAR between inflexible, flexibleOne and flexibleTwo
+         */
+
+        // Right shifting through 8 combinations of flexibleOne
+        for(int i = 0; i < flexOneShift; i++) {
+            if ( i == 0 ) {
+               // do nothing
+            } else {
+                tempFlexOne = rightShiftArray(tempFlexOne);
+            }
+            // Right shifting through 7 combinations of flexibleTwo
+            for(int j = 0; j < flexTwoShift; j++) {
+                if ( j == 0 ) {
+                    tempArray = addThreeArray(inflexible,tempFlexOne,tempFlexTwo);
+                    calculatedPAR = calculatePAR(tempArray);
+                    if ( lowestPAR == 0.0 )
+                        lowestPAR = calculatedPAR;
+                    else if ( calculatedPAR <= lowestPAR ) {
+                        lowestPAR = calculatedPAR;
+                    }
+                } else {
+                    tempFlexTwo = rightShiftArray(tempFlexTwo);
+                    tempArray = addThreeArray(inflexible,tempFlexOne,tempFlexTwo);
+                    calculatedPAR = calculatePAR(tempArray);
+                    if ( lowestPAR == 0.0 )
+                        lowestPAR = calculatedPAR;
+                    else if ( calculatedPAR <= lowestPAR ) {
+                        lowestPAR = calculatedPAR;
+                    }
+                }
+            }
+            optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
+            optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
+            tempFlexTwo = Arrays.copyOf(flexibleTwo,24); // reset copy of flexible two to default for comparison again :)
+        }
+
+        System.out.println("Lowest PAR " + lowestPAR);
+        System.out.println(printArray(optimizedFlexOne));
+        System.out.println(printArray(optimizedFlexTwo));
+
 
     }
 
@@ -60,12 +116,26 @@ public class Main {
     }
 
     /**
+     * This method prints out the array contents. Used for debugging.
+     * @param loadArray
+     * @return String
+     */
+    private static String printArray(double[] loadArray) {
+        String array_string = "[ ";
+        for(int i = 0;i < 24;i++) {
+             array_string += loadArray[i] + " ";
+        }
+        array_string += " ]";
+        return array_string;
+    }
+
+    /**
      * This method adds two array together and returns an array that is summed.
      * @param array_1
      * @param array_2
      * @return array_sum
      */
-    private static double[] addArray(double[] array_1, double[] array_2) {
+    private static double[] addTwoArray(double[] array_1, double[] array_2) {
 
         double[] array_sum = new double[24]; // initialising an empty array
         int arrayLength = 24;
@@ -75,7 +145,25 @@ public class Main {
         }
 
         return array_sum;
+    }
 
+    /**
+     * This method adds three array together and returns an array that is summed.
+     * @param array_1
+     * @param array_2
+     * @param array_3
+     * @return array_sum
+     */
+    private static double[] addThreeArray(double[] array_1, double[] array_2, double[] array_3) {
+
+        double[] array_sum = new double[24]; // initialising an empty array
+        int arrayLength = 24;
+
+        for(int i = 0;i < arrayLength; i++) {
+            array_sum[i] = array_1[i] + array_2[i] + array_3[i];
+        }
+
+        return array_sum;
     }
 
     /**
@@ -98,9 +186,21 @@ public class Main {
                 right_shifted_array[i+1] = temp_array[i];
             }
         }
+
         return right_shifted_array;
     }
 
+
+    /**
+     * TODO : To implement client server here!
+     */
+    private static void requestData() {
+
+    }
+
+    private static void sendData() {
+
+    }
 
 
 }
