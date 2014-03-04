@@ -12,8 +12,6 @@ public class Main {
     static double[] flexibleThree;
 	//static double[] serverOne;
 	//static double[] serverTwo;
-    static double[] loadSum;
-    static double loadAverage;
     static double calculatedPAR;
 
     public static void main(String[] args) {
@@ -26,12 +24,14 @@ public class Main {
     flexibleOne = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0};
     flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
+
     
     //serverone = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
     //servertwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
 
     calculatePAR(inflexible);
     addArray(flexibleOne,flexibleTwo);
+    rightShiftArray(flexibleThree);
 
     }
 
@@ -76,6 +76,29 @@ public class Main {
 
         return array_sum;
 
+    }
+
+    /**
+     * This method shifts all the items in an array right.
+     * @param array
+     * @return right_shifted_array
+     */
+    private static double[] rightShiftArray(double[] array) {
+
+        int arrayLength = array.length;
+        double [] temp_array = new double[24];
+        double [] right_shifted_array = new double[24];
+        temp_array = Arrays.copyOf(array, 24); // makes a copy of the array given
+
+        for(int i = 0;i < arrayLength;i++) {
+            if (i == 23) {
+                right_shifted_array[0] = temp_array[i];
+                return right_shifted_array;
+            } else {
+                right_shifted_array[i+1] = temp_array[i];
+            }
+        }
+        return right_shifted_array;
     }
 
 
