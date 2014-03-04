@@ -6,15 +6,15 @@ import java.util.logging.Logger;
 
 public class Main {
 
-	static double[] inflexible;
-	static double[] flexibleOne;
-	static double[] flexibleTwo;
+    static double[] inflexible;
+    static double[] flexibleOne;
+    static double[] flexibleTwo;
     static double[] flexibleThree;
     static double[] tempArray;
     static double[] tempFlexTwo;
     static double[] tempFlexOne;
-	//static double[] serverOne;
-	//static double[] serverTwo;
+    //static double[] serverOne;
+    //static double[] serverTwo;
     static double calculatedPAR = 0.0;
     static double lowestPAR = 0.0;
 
@@ -87,23 +87,29 @@ public class Main {
                     tempArray = addThreeArray(inflexible, tempFlexOne, tempFlexTwo);
 
                     calculatedPAR = calculatePAR(tempArray);
-                    if ( lowestPAR == 0.0 )
+                    if ( lowestPAR == 0.0 ) {
                         lowestPAR = calculatedPAR;
-                    else if ( calculatedPAR <= lowestPAR ) {
+                        optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
+                        optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
+                    } else if ( calculatedPAR <= lowestPAR ) {
                         lowestPAR = calculatedPAR;
+                        optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
+                        optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
                     }
 
                     calculatedVAR = calculateVAR(tempArray);
-                    if ( lowestVAR == 0.0 )
+                    if ( lowestVAR == 0.0 ) {
                         lowestVAR = calculatedVAR;
-                    else if ( calculatedVAR <= lowestVAR ) {
+                        optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
+                        optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
+                    } else if ( calculatedVAR <= lowestVAR ) {
                         lowestVAR = calculatedVAR;
+                        optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
+                        optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
                     }
 
                 }
             }
-            optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
-            optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
             tempFlexTwo = Arrays.copyOf(flexibleTwo,24); // reset copy of flexible two to default for comparison again :)
         }
 
