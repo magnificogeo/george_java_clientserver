@@ -14,6 +14,7 @@ public class NodeTwo {
     static double[] tempArray;
     static double[] tempFlexTwo;
     static double[] tempFlexOne;
+    static double[] tempFlexThree;
     //static double[] serverOne;
     //static double[] serverTwo;
     static double calculatedPAR = 0.0;
@@ -22,8 +23,9 @@ public class NodeTwo {
     static double calculatedVAR = 0.0;
     static double lowestVAR = 0.0;
 
-    static double[] optimizedFlexTwo;
+    //static double[] optimizedFlexTwo;
     static double[] optimizedFlexOne;
+    static double[] optimizedFlexThree;
 
     static int flexOneShift = 8; // flexibleOne can be rightShifted 8 times
     static int flexTwoShift = 7; // flexibleTwo can be rightShifted 7 times
@@ -39,7 +41,7 @@ public class NodeTwo {
          */
         inflexible = new double[] {2.01,1.76,1.76,1.76,1.76,1.76,3.26,4.81,0.56,0.26,0.16,0.16,0.16,0.16,0.16,0.16,0.16,1.76,2.06,0.56,0.71,0.71,2.31,4.81}; // power profile for inflexible loads
         flexibleOne = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0};
-        flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        //flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
         flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
 
 
@@ -47,8 +49,9 @@ public class NodeTwo {
         tempFlexTwo = new double[24];
         tempFlexOne = new double[24];
 
-        tempFlexTwo = Arrays.copyOf(flexibleTwo,24);
+        //tempFlexTwo = Arrays.copyOf(flexibleTwo,24);
         tempFlexOne = Arrays.copyOf(flexibleOne,24);
+        tempFlexThree = Arrays.copyOf(flexibleThree,24);
         //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
         //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
 
@@ -98,10 +101,10 @@ public class NodeTwo {
                 tempFlexOne = rightShiftArray(tempFlexOne);
             }
             // Right shifting through 7 combinations of flexibleTwo
-            for(int j = 0; j < flexTwoShift; j++) {
+            for(int j = 0; j < flexThreeShift; j++) {
                 if ( j == 0 ) {
 
-                    tempArray = addThreeArray(inflexible,tempFlexOne,tempFlexTwo);
+                    tempArray = addThreeArray(inflexible,tempFlexOne,tempFlexThree);
 
                     calculatedPAR = calculatePAR(tempArray);
                     if ( lowestPAR == 0.0 )
@@ -121,29 +124,29 @@ public class NodeTwo {
                     System.out.println("VAR :" + calculatedVAR);
 
                 } else {
-                    tempFlexTwo = rightShiftArray(tempFlexTwo);
-                    tempArray = addThreeArray(inflexible, tempFlexOne, tempFlexTwo);
+                    tempFlexThree = rightShiftArray(tempFlexThree);
+                    tempArray = addThreeArray(inflexible, tempFlexOne, tempFlexThree);
 
                     calculatedPAR = calculatePAR(tempArray);
                     if ( lowestPAR == 0.0 ) {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
-                        optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
+                        optimizedFlexThree = Arrays.copyOf(tempFlexThree,24);
                     } else if ( calculatedPAR < lowestPAR ) {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
-                        optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
+                        optimizedFlexThree = Arrays.copyOf(tempFlexThree,24);
                     }
 
                     calculatedVAR = calculateVAR(tempArray);
                     if ( lowestVAR == 0.0 ) {
                         lowestVAR = calculatedVAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
-                        optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
+                        optimizedFlexThree = Arrays.copyOf(tempFlexThree,24);
                     } else if ( calculatedVAR < lowestVAR ) {
                         lowestVAR = calculatedVAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
-                        optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
+                        optimizedFlexThree = Arrays.copyOf(tempFlexThree,24);
                     }
 
                     System.out.println("PAR :" + calculatedPAR);
@@ -151,7 +154,7 @@ public class NodeTwo {
 
                 }
             }
-            tempFlexTwo = Arrays.copyOf(flexibleTwo,24); // reset copy of flexible two to default for comparison again :)
+            tempFlexThree = Arrays.copyOf(flexibleThree,24); // reset copy of flexible two to default for comparison again :)
         }
         long endTime = System.currentTimeMillis();
 
@@ -161,7 +164,7 @@ public class NodeTwo {
         //System.out.println("Verify PAR: " + calculatePAR(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo)));
         //System.out.println("Verify VAR: " + calculateVAR(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo)));
         System.out.println("Power profile 1: " + printArray(optimizedFlexOne));
-        System.out.println("Power profile 2: " + printArray(optimizedFlexTwo));
+        System.out.println("Power profile 2: " + printArray(optimizedFlexThree));
     }
 
     /**
@@ -300,7 +303,7 @@ public class NodeTwo {
     private static void startServer() throws Exception {
         String clientSentence;
         String capitalizedSentence;
-        ServerSocket welcomeSocket = new ServerSocket(6789);
+        ServerSocket welcomeSocket = new ServerSocket(6790);
         while(true) {
             Socket connectionSocket = welcomeSocket.accept();
             BufferedReader inFromClient =

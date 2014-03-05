@@ -7,7 +7,6 @@ import java.util.logging.Logger;
  */
 public class Main {
 
-
     static double[] inflexible;
     static double[] flexibleOne;
     static double[] flexibleTwo;
@@ -53,12 +52,15 @@ public class Main {
         //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
         //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
 
-        try {
+        algorithmStart();
+        /*try {
             startServer();
             System.out.println("Server started successfully");
         } catch ( Exception e ) {
             System.out.println("Unable to start server process. Process may be used!");
-        }
+        }*/
+
+
 
     }
 
@@ -352,5 +354,6 @@ public class Main {
 
 
 }
-	
+
+
 

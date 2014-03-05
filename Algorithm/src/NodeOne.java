@@ -7,6 +7,8 @@ import java.util.logging.Logger;
  */
 public class NodeOne {
 
+    static String status = "locked";
+
     static double[] inflexible;
     static double[] flexibleOne;
     static double[] flexibleTwo;
@@ -14,6 +16,7 @@ public class NodeOne {
     static double[] tempArray;
     static double[] tempFlexTwo;
     static double[] tempFlexOne;
+    static double[] tempFlexThree;
     //static double[] serverOne;
     //static double[] serverTwo;
     static double calculatedPAR = 0.0;
@@ -29,6 +32,7 @@ public class NodeOne {
     static int flexTwoShift = 7; // flexibleTwo can be rightShifted 7 times
     static int flexThreeShift = 7; // flexibleThree can be rightShifted 7 times
 
+    static String status = "";
 
     public static void main(String[] args) {
 
@@ -52,12 +56,15 @@ public class NodeOne {
         //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
         //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
 
+        algorithmStart();
         try {
             startServer();
             System.out.println("Server started successfully");
         } catch ( Exception e ) {
             System.out.println("Unable to start server process. Process may be used!");
         }
+
+
 
     }
 
@@ -162,6 +169,13 @@ public class NodeOne {
         //System.out.println("Verify VAR: " + calculateVAR(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo)));
         System.out.println("Power profile 1: " + printArray(optimizedFlexOne));
         System.out.println("Power profile 2: " + printArray(optimizedFlexTwo));
+    }
+
+    /**
+     * This method gets the status of the system.
+     */
+    private static void getStatus() {
+        System.out.println("Status: " + status);
     }
 
     /**
@@ -311,8 +325,10 @@ public class NodeOne {
                             connectionSocket.getOutputStream());
             clientSentence = inFromClient.readLine();
             System.out.println("FROM CLIENT: " + clientSentence);
-            if ( clientSentence.equals("command1")) {
+            if ( clientSentence.equals("start_alogorithm")) {
                 algorithmStart();
+            } else if ( clientSentence.equals("getstatus")) {
+                getStatus();
             }
             capitalizedSentence =
                     clientSentence.toUpperCase() + '\n';

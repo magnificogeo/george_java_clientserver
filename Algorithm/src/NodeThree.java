@@ -7,6 +7,7 @@ import java.util.logging.Logger;
  */
 public class NodeThree {
 
+
     static double[] inflexible;
     static double[] flexibleOne;
     static double[] flexibleTwo;
