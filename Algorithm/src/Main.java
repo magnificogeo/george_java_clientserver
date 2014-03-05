@@ -2,16 +2,11 @@ import java.io.*;
 import java.net.*;
 import java.util.Arrays;
 import java.util.logging.Logger;
-
-//hi
-
-
-
 /**
  * This class contains the code for one of the server. All nodes start off as a server, listening for command, before executing :)
  */
->>>>>>> Stashed changes
 public class Main {
+
 
     static double[] inflexible;
     static double[] flexibleOne;
@@ -38,25 +33,25 @@ public class Main {
 
     public static void main(String[] args) {
 
-    /**
-    * This section defines the power profiles of flexible and inflexible loads for computation.
-    * They are stored in 24 element-wide arrays with each array element as the power load for that hour.
-    * These configurations are used as reference and should not be changed!
-    */
-    inflexible = new double[] {2.01,1.76,1.76,1.76,1.76,1.76,3.26,4.81,0.56,0.26,0.16,0.16,0.16,0.16,0.16,0.16,0.16,1.76,2.06,0.56,0.71,0.71,2.31,4.81}; // power profile for inflexible loads
-    flexibleOne = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0};
-    flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-    flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
+        /**
+         * This section defines the power profiles of flexible and inflexible loads for computation.
+         * They are stored in 24 element-wide arrays with each array element as the power load for that hour.
+         * These configurations are used as reference and should not be changed!
+         */
+        inflexible = new double[] {2.01,1.76,1.76,1.76,1.76,1.76,3.26,4.81,0.56,0.26,0.16,0.16,0.16,0.16,0.16,0.16,0.16,1.76,2.06,0.56,0.71,0.71,2.31,4.81}; // power profile for inflexible loads
+        flexibleOne = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0};
+        flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
 
-    
-    tempArray = new double[24];
-    tempFlexTwo = new double[24];
-    tempFlexOne = new double[24];
 
-    tempFlexTwo = Arrays.copyOf(flexibleTwo,24);
-    tempFlexOne = Arrays.copyOf(flexibleOne,24);
-    //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
-    //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
+        tempArray = new double[24];
+        tempFlexTwo = new double[24];
+        tempFlexOne = new double[24];
+
+        tempFlexTwo = Arrays.copyOf(flexibleTwo,24);
+        tempFlexOne = Arrays.copyOf(flexibleOne,24);
+        //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
+        //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
 
         try {
             startServer();
@@ -227,7 +222,7 @@ public class Main {
     private static String printArray(double[] loadArray) {
         String array_string = "[ ";
         for(int i = 0;i < 24;i++) {
-             array_string += loadArray[i] + " ";
+            array_string += loadArray[i] + " ";
         }
         array_string += " ]";
         return array_string;
@@ -303,49 +298,53 @@ public class Main {
      * This function starts the server running.
      * @throws Exception
      */
-     private static void startServer() throws Exception {
-         String clientSentence;
-         String capitalizedSentence;
-         ServerSocket welcomeSocket = new ServerSocket(6789);
-         while(true) {
-             Socket connectionSocket = welcomeSocket.accept();
-             BufferedReader inFromClient =
-                     new BufferedReader(new InputStreamReader(
-                             connectionSocket.getInputStream()));
-             DataOutputStream outToClient =
-                     new DataOutputStream(
-                             connectionSocket.getOutputStream());
-             clientSentence = inFromClient.readLine();
-             capitalizedSentence =
-                     clientSentence.toUpperCase() + '\n';
-             outToClient.writeBytes(capitalizedSentence);
-         }
-     }
+    private static void startServer() throws Exception {
+        String clientSentence;
+        String capitalizedSentence;
+        ServerSocket welcomeSocket = new ServerSocket(6789);
+        while(true) {
+            Socket connectionSocket = welcomeSocket.accept();
+            BufferedReader inFromClient =
+                    new BufferedReader(new InputStreamReader(
+                            connectionSocket.getInputStream()));
+            DataOutputStream outToClient =
+                    new DataOutputStream(
+                            connectionSocket.getOutputStream());
+            clientSentence = inFromClient.readLine();
+            System.out.println("FROM CLIENT: " + clientSentence);
+            if ( clientSentence.equals("command1")) {
+                algorithmStart();
+            }
+            capitalizedSentence =
+                    clientSentence.toUpperCase() + '\n';
+            outToClient.writeBytes(capitalizedSentence);
+        }
+    }
 
     /**
      * This function starts the client running.
      * @throws Exception
      */
-     private static void startClient() throws Exception {
-         String sentence;
-         String modifiedSentence;
-         BufferedReader inFromUser = new BufferedReader(
-                 new InputStreamReader(System.in));
-         //Socket clientSocket = new Socket("change to server's IP address", 6789);
-         Socket clientSocket = new Socket("127.0.0.1", 6789);
-         DataOutputStream outToServer = new DataOutputStream(
-                 clientSocket.getOutputStream());
-         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-         sentence = inFromUser.readLine();
-         outToServer.writeBytes(sentence + '\n');
-         modifiedSentence = inFromServer.readLine();
-         System.out.println("FROM SERVER: " + modifiedSentence);
-         clientSocket.close();
-     }
+    private static void startClient() throws Exception {
+        String sentence;
+        String modifiedSentence;
+        BufferedReader inFromUser = new BufferedReader(
+                new InputStreamReader(System.in));
+        //Socket clientSocket = new Socket("change to server's IP address", 6789);
+        Socket clientSocket = new Socket("127.0.0.1", 6789);
+        DataOutputStream outToServer = new DataOutputStream(
+                clientSocket.getOutputStream());
+        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        sentence = inFromUser.readLine();
+        outToServer.writeBytes(sentence + '\n');
+        modifiedSentence = inFromServer.readLine();
+        System.out.println("FROM SERVER: " + modifiedSentence);
+        clientSocket.close();
+    }
 
-     private static void requestData() {
+    private static void requestData() {
 
-     }
+    }
 
     private static void sendData() {
 
