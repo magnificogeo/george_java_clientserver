@@ -2,7 +2,7 @@ import java.io.*;
 import java.net.*;
 import java.util.Arrays;
 import java.util.logging.Logger;
-
+//hi
 
 public class Main {
 
@@ -41,7 +41,7 @@ public class Main {
     flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
 
-
+    
     tempArray = new double[24];
     tempFlexTwo = new double[24];
     tempFlexOne = new double[24];
