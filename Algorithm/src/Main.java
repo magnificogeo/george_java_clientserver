@@ -54,7 +54,7 @@ public class Main {
         /**
          * This loop finds the lowest PAR between inflexible, flexibleOne and flexibleTwo
          */
-
+        long startTime = System.currentTimeMillis();
         // Right shifting through 8 combinations of flexibleOne
         for(int i = 0; i < flexOneShift; i++) {
             if ( i == 0 ) {
@@ -71,16 +71,19 @@ public class Main {
                     calculatedPAR = calculatePAR(tempArray);
                     if ( lowestPAR == 0.0 )
                         lowestPAR = calculatedPAR;
-                    else if ( calculatedPAR <= lowestPAR ) {
+                    else if ( calculatedPAR < lowestPAR ) {
                         lowestPAR = calculatedPAR;
                     }
 
                     calculatedVAR = calculateVAR(tempArray);
                     if ( lowestVAR == 0.0 )
                         lowestVAR = calculatedVAR;
-                    else if ( calculatedVAR <= lowestVAR ) {
+                    else if ( calculatedVAR < lowestVAR ) {
                         lowestVAR = calculatedVAR;
                     }
+
+                    System.out.println("PAR :" + calculatedPAR);
+                    System.out.println("VAR :" + calculatedVAR);
 
                 } else {
                     tempFlexTwo = rightShiftArray(tempFlexTwo);
@@ -91,7 +94,7 @@ public class Main {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
-                    } else if ( calculatedPAR <= lowestPAR ) {
+                    } else if ( calculatedPAR < lowestPAR ) {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
@@ -102,21 +105,28 @@ public class Main {
                         lowestVAR = calculatedVAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
-                    } else if ( calculatedVAR <= lowestVAR ) {
+                    } else if ( calculatedVAR < lowestVAR ) {
                         lowestVAR = calculatedVAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
                     }
 
+                    System.out.println("PAR :" + calculatedPAR);
+                    System.out.println("VAR :" + calculatedVAR);
+
                 }
             }
             tempFlexTwo = Arrays.copyOf(flexibleTwo,24); // reset copy of flexible two to default for comparison again :)
         }
+        long endTime = System.currentTimeMillis();
 
         System.out.println("Lowest PAR " + lowestPAR);
         System.out.println("Lowest VAR " + lowestVAR);
-        System.out.println(printArray(optimizedFlexOne));
-        System.out.println(printArray(optimizedFlexTwo));
+        System.out.println("Execution time: " + (endTime - startTime) + "ms");
+        //System.out.println("Verify PAR: " + calculatePAR(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo)));
+        //System.out.println("Verify VAR: " + calculateVAR(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo)));
+        System.out.println("Power profile 1: " + printArray(optimizedFlexOne));
+        System.out.println("Power profile 2: " + printArray(optimizedFlexTwo));
 
 
     }
