@@ -51,6 +51,18 @@ public class Main {
     //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
     //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
 
+        /*try {
+            startServer();
+        } catch ( Exception e ) {
+            System.out.println("Server cannot be started. You might have another process running.");
+        }
+        try {
+            startClient();
+        } catch ( Exception e ) {
+            System.out.println("Client cannot be started. You might hve another process running.");
+        }*/
+
+
         /**
          * This loop finds the lowest PAR between inflexible, flexibleOne and flexibleTwo
          */
@@ -259,9 +271,54 @@ public class Main {
     /**
      * TODO : To implement client server here!
      */
-    private static void requestData() {
 
-    }
+    /**
+     * This function starts the server running.
+     * @throws Exception
+     */
+     private static void startServer() throws Exception {
+         String clientSentence;
+         String capitalizedSentence;
+         ServerSocket welcomeSocket = new ServerSocket(6789);
+         while(true) {
+             Socket connectionSocket = welcomeSocket.accept();
+             BufferedReader inFromClient =
+                     new BufferedReader(new InputStreamReader(
+                             connectionSocket.getInputStream()));
+             DataOutputStream outToClient =
+                     new DataOutputStream(
+                             connectionSocket.getOutputStream());
+             clientSentence = inFromClient.readLine();
+             capitalizedSentence =
+                     clientSentence.toUpperCase() + '\n';
+             outToClient.writeBytes(capitalizedSentence);
+         }
+     }
+
+    /**
+     * This function starts the client running.
+     * @throws Exception
+     */
+     private static void startClient() throws Exception {
+         String sentence;
+         String modifiedSentence;
+         BufferedReader inFromUser = new BufferedReader(
+                 new InputStreamReader(System.in));
+         //Socket clientSocket = new Socket("change to server's IP address", 6789);
+         Socket clientSocket = new Socket("127.0.0.1", 6789);
+         DataOutputStream outToServer = new DataOutputStream(
+                 clientSocket.getOutputStream());
+         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+         sentence = inFromUser.readLine();
+         outToServer.writeBytes(sentence + '\n');
+         modifiedSentence = inFromServer.readLine();
+         System.out.println("FROM SERVER: " + modifiedSentence);
+         clientSocket.close();
+     }
+
+     private static void requestData() {
+
+     }
 
     private static void sendData() {
 
