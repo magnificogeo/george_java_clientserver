@@ -2,8 +2,15 @@ import java.io.*;
 import java.net.*;
 import java.util.Arrays;
 import java.util.logging.Logger;
+
 //hi
 
+
+
+/**
+ * This class contains the code for one of the server. All nodes start off as a server, listening for command, before executing :)
+ */
+>>>>>>> Stashed changes
 public class Main {
 
     static double[] inflexible;
@@ -51,17 +58,39 @@ public class Main {
     //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
     //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
 
-        /*try {
-            startServer();
-        } catch ( Exception e ) {
-            System.out.println("Server cannot be started. You might have another process running.");
-        }
         try {
-            startClient();
+            startServer();
+            System.out.println("Server started successfully");
         } catch ( Exception e ) {
-            System.out.println("Client cannot be started. You might hve another process running.");
-        }*/
+            System.out.println("Unable to start server process. Process may be used!");
+        }
 
+    }
+
+    /**
+     * This is the main method that does the optimizations for the power profile!
+     * TODO Add serverOne and serverTwo power profiles as input arguments here....
+     */
+    public static void algorithmStart() {
+        /**
+         * This section defines the power profiles of flexible and inflexible loads for computation.
+         * They are stored in 24 element-wide arrays with each array element as the power load for that hour.
+         * These configurations are used as reference and should not be changed!
+         */
+        inflexible = new double[] {2.01,1.76,1.76,1.76,1.76,1.76,3.26,4.81,0.56,0.26,0.16,0.16,0.16,0.16,0.16,0.16,0.16,1.76,2.06,0.56,0.71,0.71,2.31,4.81}; // power profile for inflexible loads
+        flexibleOne = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0};
+        flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+        flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
+
+
+        tempArray = new double[24];
+        tempFlexTwo = new double[24];
+        tempFlexOne = new double[24];
+
+        tempFlexTwo = Arrays.copyOf(flexibleTwo,24);
+        tempFlexOne = Arrays.copyOf(flexibleOne,24);
+        //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
+        //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
 
         /**
          * This loop finds the lowest PAR between inflexible, flexibleOne and flexibleTwo
@@ -70,7 +99,7 @@ public class Main {
         // Right shifting through 8 combinations of flexibleOne
         for(int i = 0; i < flexOneShift; i++) {
             if ( i == 0 ) {
-               // do nothing
+                // do nothing
             } else {
                 tempFlexOne = rightShiftArray(tempFlexOne);
             }
@@ -139,8 +168,6 @@ public class Main {
         //System.out.println("Verify VAR: " + calculateVAR(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo)));
         System.out.println("Power profile 1: " + printArray(optimizedFlexOne));
         System.out.println("Power profile 2: " + printArray(optimizedFlexTwo));
-
-
     }
 
     /**
