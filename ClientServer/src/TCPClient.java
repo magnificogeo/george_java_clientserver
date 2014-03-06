@@ -8,7 +8,7 @@ class TCPClient {
         BufferedReader inFromUser = new BufferedReader(
                 new InputStreamReader(System.in));
         //Socket clientSocket = new Socket("change to server's IP address", 6789);
-        Socket clientSocket = new Socket("127.0.0.1", 6789);
+        Socket clientSocket = new Socket("127.0.0.1", 11000);
         DataOutputStream outToServer = new DataOutputStream(
                 clientSocket.getOutputStream());
         BufferedReader inFromServer = 

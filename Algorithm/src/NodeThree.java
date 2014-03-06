@@ -26,38 +26,23 @@ public class NodeThree {
     static double[] optimizedFlexTwo;
     static double[] optimizedFlexOne;
 
-    static int flexOneShift = 8; // flexibleOne can be rightShifted 8 times
-    static int flexTwoShift = 7; // flexibleTwo can be rightShifted 7 times
-    static int flexThreeShift = 7; // flexibleThree can be rightShifted 7 times
+    static int mainServerPort = 10000;
+    static int nodeTwoPort = 12000;
+    static int nodeOnePort = 11000;
 
+    static int serverRunning = 0;
+    static int maxConnections = 500;
 
     public static void main(String[] args) {
 
-        /**
-         * This section defines the power profiles of flexible and inflexible loads for computation.
-         * They are stored in 24 element-wide arrays with each array element as the power load for that hour.
-         * These configurations are used as reference and should not be changed!
-         */
-        inflexible = new double[] {2.01,1.76,1.76,1.76,1.76,1.76,3.26,4.81,0.56,0.26,0.16,0.16,0.16,0.16,0.16,0.16,0.16,1.76,2.06,0.56,0.71,0.71,2.31,4.81}; // power profile for inflexible loads
-        flexibleOne = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0};
-        flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-        flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
-
-
-        tempArray = new double[24];
-        tempFlexTwo = new double[24];
-        tempFlexOne = new double[24];
-
-        tempFlexTwo = Arrays.copyOf(flexibleTwo,24);
-        tempFlexOne = Arrays.copyOf(flexibleOne,24);
-        //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
-        //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
-
-        try {
-            startServer();
-            System.out.println("Server started successfully");
-        } catch ( Exception e ) {
-            System.out.println("Unable to start server process. Process may be used!");
+        if ( serverRunning == 0 ) {
+            try {
+                startServer();
+                System.out.println("Server started successfully");
+                serverRunning = 1;
+            } catch ( Exception e ) {
+                System.out.println("Unable to start server process. Process may be used!");
+            }
         }
 
     }
@@ -77,6 +62,9 @@ public class NodeThree {
         flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
         flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
 
+        int flexOneShift = 8; // flexibleOne can be rightShifted 8 times
+        int flexTwoShift = 7; // flexibleTwo can be rightShifted 7 times
+        //int flexThreeShift = 7; // flexibleThree can be rightShifted 7 times
 
         tempArray = new double[24];
         tempFlexTwo = new double[24];
@@ -87,6 +75,12 @@ public class NodeThree {
         //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
         //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
 
+
+        try {
+            sendData(mainServerPort,"Server 3 Start");
+        } catch ( Exception e ) {
+            System.out.println("Send data failed!");
+        }
         /**
          * This loop finds the lowest PAR between inflexible, flexibleOne and flexibleTwo
          */
@@ -159,10 +153,20 @@ public class NodeThree {
         System.out.println("Lowest PAR " + lowestPAR);
         System.out.println("Lowest VAR " + lowestVAR);
         System.out.println("Execution time: " + (endTime - startTime) + "ms");
-        //System.out.println("Verify PAR: " + calculatePAR(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo)));
-        //System.out.println("Verify VAR: " + calculateVAR(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo)));
-        System.out.println("Power profile 1: " + printArray(optimizedFlexOne));
-        System.out.println("Power profile 2: " + printArray(optimizedFlexTwo));
+        //System.out.println("Power profile 1: " + printArray(optimizedFlexOne));
+        //System.out.println("Power profile 2: " + printArray(optimizedFlexTwo));
+
+        try {
+            sendData(mainServerPort,"Server 3 End");
+        } catch ( Exception e ) {
+            System.out.println("Send data failed!");
+        }
+
+        try {
+            sendData(nodeOnePort,"start_algorithm");
+        } catch ( Exception e ) {
+            System.out.println("Send data failed!");
+        }
     }
 
     /**
@@ -300,56 +304,34 @@ public class NodeThree {
      */
     private static void startServer() throws Exception {
         String clientSentence;
-        String capitalizedSentence;
-        ServerSocket welcomeSocket = new ServerSocket(6789);
-        while(true) {
-            Socket connectionSocket = welcomeSocket.accept();
-            BufferedReader inFromClient =
-                    new BufferedReader(new InputStreamReader(
-                            connectionSocket.getInputStream()));
-            DataOutputStream outToClient =
-                    new DataOutputStream(
-                            connectionSocket.getOutputStream());
-            clientSentence = inFromClient.readLine();
-            System.out.println("FROM CLIENT: " + clientSentence);
-            if ( clientSentence.equals("command1")) {
-                algorithmStart();
+        int i = 0;
+        //String capitalizedSentence;
+        try {
+            ServerSocket welcomeSocket = new ServerSocket(13000);
+
+            while ((i++ < maxConnections || maxConnections == 0)) {
+
+                Socket connectionSocket = welcomeSocket.accept();
+                multiThreadedComms connection = new multiThreadedComms(connectionSocket,3);
+                Thread t = new Thread(connection);
+                t.start();
             }
-            capitalizedSentence =
-                    clientSentence.toUpperCase() + '\n';
-            outToClient.writeBytes(capitalizedSentence);
+
+        } catch (IOException ioe) {
+            System.out.println("IOException on socket listen: " + ioe);
         }
     }
 
-    /**
-     * This function starts the client running.
-     * @throws Exception
-     */
-    private static void startClient() throws Exception {
-        String sentence;
-        String modifiedSentence;
-        BufferedReader inFromUser = new BufferedReader(
-                new InputStreamReader(System.in));
-        //Socket clientSocket = new Socket("change to server's IP address", 6789);
-        Socket clientSocket = new Socket("127.0.0.1", 6789);
+    private static void sendData(int portNum, String data) throws Exception {
+        Socket clientSocket = new Socket("127.0.0.1", portNum);
         DataOutputStream outToServer = new DataOutputStream(
                 clientSocket.getOutputStream());
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        sentence = inFromUser.readLine();
-        outToServer.writeBytes(sentence + '\n');
-        modifiedSentence = inFromServer.readLine();
-        System.out.println("FROM SERVER: " + modifiedSentence);
+        outToServer.writeBytes(data + '\n');
+        /*modifiedSentence = inFromServer.readLine();
+        System.out.println("FROM SERVER: " + modifiedSentence);*/
         clientSocket.close();
     }
-
-    private static void requestData() {
-
-    }
-
-    private static void sendData() {
-
-    }
-
 
 }
 	
