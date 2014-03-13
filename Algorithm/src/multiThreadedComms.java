@@ -1,6 +1,10 @@
 import java.io.*;
 import java.net.*;
 
+/**
+ * This class implements Runnable. Runnable objects are code to be executed within a thread in a process.
+ * Constructor takes in
+ */
 public class multiThreadedComms implements Runnable {
 
     private Socket server;
@@ -30,9 +34,7 @@ public class multiThreadedComms implements Runnable {
                 if ( nodeNum == 3 )
                     NodeThree.algorithmStart();
             }
-            /*capitalizedSentence =
-                    clientSentence.toUpperCase() + '\n';
-            outToClient.writeBytes(capitalizedSentence);*/
+
         } catch ( IOException ioe ) {
             System.out.println("IOException on socket listen: " + ioe );
             ioe.printStackTrace();

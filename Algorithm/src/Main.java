@@ -12,6 +12,15 @@ public class Main {
     static int nodeThreePort = 13000;
 
     static int cycles = 0;
+    /*static int final_power_profile;
+    static int final_system_PAR;
+    static int final_system_VAR;
+
+    static int nodeOnePAR;
+    static int nodeTwoPAR;
+    static int nodeThreePAR;*/
+
+
 
     public static void main(String[] args) {
 
