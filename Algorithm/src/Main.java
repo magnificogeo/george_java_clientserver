@@ -5,6 +5,8 @@ import java.util.logging.Logger;
 /**
  * This class contains the code for one of the server. All nodes start off as a server, listening for command, before executing :)
  */
+
+
 public class Main {
 
     static int nodeOnePort = 11000;
@@ -12,15 +14,18 @@ public class Main {
     static int nodeThreePort = 13000;
 
     static int cycles = 0;
-    /*static int final_power_profile;
-    static int final_system_PAR;
-    static int final_system_VAR;
+    /*static double final_system_profile;
 
-    static int nodeOnePAR;
-    static int nodeTwoPAR;
-    static int nodeThreePAR;*/
+    static double[] nodeOneProfile;
+    static double[] nodeTwoProfile;
+    static double[] nodeThreeProfile;
 
+    static double final_system_PAR;
+    static double final_system_VAR;
 
+    static double nodeOnePAR;
+    static double nodeTwoPAR;
+    static double nodeThreePAR;*/
 
     public static void main(String[] args) {
 
@@ -51,7 +56,6 @@ public class Main {
      */
     private static void startServer() throws Exception {
         String clientSentence;
-        //String capitalizedSentence;
         ServerSocket welcomeSocket = new ServerSocket(10000);
         while(true) {
             Socket connectionSocket = welcomeSocket.accept();
@@ -62,14 +66,35 @@ public class Main {
                     new DataOutputStream(
                             connectionSocket.getOutputStream());
             clientSentence = inFromClient.readLine();
-            System.out.println("FROM CLIENT: " + clientSentence);
+
+            if ( clientSentence.equals("power_profile_one") ) {
+                // read and store power profile
+            }
+
+            if ( clientSentence.equals("power_profile_two") ) {
+                // read and store power profile
+            }
+
+            if ( clientSentence.equals("power_profile_three") ) {
+                // read and store power profile
+            }
+
+            if ( clientSentence.equals("req_power_profile_one") ) {
+                // Send power profile back via outToClient
+
+            }
+
+            if ( clientSentence.equals("req_power_profile_two") ) {
+                // Send power profile via outToClient
+            }
+
+            if ( clientSentence.equals("req_power_profile_three") ) {
+                // Send power profile via outToClient
+            }
 
             cycles++;
 
             System.out.println("Cycle: " + cycles);
-            /*capitalizedSentence =
-                    clientSentence.toUpperCase() + '\n';
-            outToClient.writeBytes(capitalizedSentence);*/
         }
     }
 
@@ -79,8 +104,6 @@ public class Main {
                 clientSocket.getOutputStream());
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
         outToServer.writeBytes(data + '\n');
-        /*modifiedSentence = inFromServer.readLine();
-        System.out.println("FROM SERVER: " + modifiedSentence);*/
         clientSocket.close();
     }
 

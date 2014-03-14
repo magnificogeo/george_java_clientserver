@@ -15,8 +15,8 @@ public class NodeThree {
     static double[] tempArray;
     static double[] tempFlexTwo;
     static double[] tempFlexOne;
-    //static double[] serverOne;
-    //static double[] serverTwo;
+    static double[] serverOne;
+    static double[] serverTwo;
     static double calculatedPAR = 0.0;
     static double lowestPAR = 0.0;
 
@@ -72,15 +72,21 @@ public class NodeThree {
 
         tempFlexTwo = Arrays.copyOf(flexibleTwo,24);
         tempFlexOne = Arrays.copyOf(flexibleOne,24);
-        //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
-        //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
-
 
         try {
-            sendData(mainServerPort,"Server 3 Start");
+            sendData(nodeTwoPort,"server_two_power.txt");
         } catch ( Exception e ) {
-            System.out.println("Send data failed!");
+            System.out.println("power profile request from node 2 failed!");
         }
+
+        try {
+            sendData(nodeOnePort,"server_one_power.txt");
+        } catch ( Exception e ) {
+            System.out.println("power profile request from node 1 failed!");
+        }
+
+        inflexible = addThreeArray(inflexible,serverTwo,serverOne);
+
         /**
          * This loop finds the lowest PAR between inflexible, flexibleOne and flexibleTwo
          */
@@ -153,14 +159,6 @@ public class NodeThree {
         System.out.println("Lowest PAR " + lowestPAR);
         System.out.println("Lowest VAR " + lowestVAR);
         System.out.println("Execution time: " + (endTime - startTime) + "ms");
-        //System.out.println("Power profile 1: " + printArray(optimizedFlexOne));
-        //System.out.println("Power profile 2: " + printArray(optimizedFlexTwo));
-
-        try {
-            sendData(mainServerPort,"Server 3 End");
-        } catch ( Exception e ) {
-            System.out.println("Send data failed!");
-        }
 
         try {
             sendData(nodeOnePort,"start_algorithm");
@@ -270,6 +268,26 @@ public class NodeThree {
     }
 
     /**
+     * This method adds four array together and returns an array that is summed.
+     * @param array_1
+     * @param array_2
+     * @param array_3
+     * @param array_4
+     * @return array_sum
+     */
+    private static double[] addFourArray(double[] array_1, double[] array_2, double[] array_3, double[] array_4) {
+
+        double[] array_sum = new double[24]; // initialising an empty array
+        int arrayLength = 24;
+
+        for(int i = 0;i < arrayLength; i++) {
+            array_sum[i] = array_1[i] + array_2[i] + array_3[i] + array_4[i];
+        }
+
+        return array_sum;
+    }
+
+    /**
      * This method shifts all the items in an array right.
      * @param array
      * @return right_shifted_array
@@ -293,19 +311,12 @@ public class NodeThree {
         return right_shifted_array;
     }
 
-
-    /**
-     * TODO : To implement client server here!
-     */
-
     /**
      * This function starts the server running.
      * @throws Exception
      */
     private static void startServer() throws Exception {
-        String clientSentence;
         int i = 0;
-        //String capitalizedSentence;
         try {
             ServerSocket welcomeSocket = new ServerSocket(13000);
 
@@ -327,10 +338,65 @@ public class NodeThree {
         DataOutputStream outToServer = new DataOutputStream(
                 clientSocket.getOutputStream());
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        outToServer.writeBytes(data + '\n');
-        /*modifiedSentence = inFromServer.readLine();
-        System.out.println("FROM SERVER: " + modifiedSentence);*/
-        clientSocket.close();
+
+        if ( data.equals("server_two_power.txt") ) {
+
+            outToServer.writeBytes(data + '\n');
+
+            String inputString;
+
+            String [] temp;
+
+            File f2 = new File(data);
+            FileOutputStream f2OutStream = new FileOutputStream(f2);
+
+            serverTwo = new double[24];
+            while ((inputString = inFromServer.readLine()) != null ) { // read in what is being returned from the serve
+
+                byte inputByte[] = inputString.getBytes();
+                f2OutStream.write(inputByte);
+                f2OutStream.flush();
+
+
+                temp = inputString.split(" ");
+                for( int j = 0 ; j < 24; j++) {
+                    serverTwo[j] = Double.parseDouble(temp[j]);
+                }
+            }
+
+            f2OutStream.close();
+
+
+        } else if ( data.equals("server_one_power.txt") ) {
+
+            outToServer.writeBytes(data + '\n');
+
+            String inputString;
+
+            String [] temp;
+
+            File f1 = new File(data);
+            FileOutputStream f1OutStream = new FileOutputStream(f1);
+
+            serverOne = new double[24];
+            while ((inputString = inFromServer.readLine()) != null ) { // read in what is being returned from the server
+
+                byte inputByte[] = inputString.getBytes();
+                f1OutStream.write(inputByte);
+                f1OutStream.flush();
+
+                temp = inputString.split(" ");
+                for( int j = 0 ; j < 24; j++) {
+                    serverOne[j] = Double.parseDouble(temp[j]);
+                }
+            }
+
+            f1OutStream.close();
+
+        } else {
+            outToServer.writeBytes(data + '\n');
+            clientSocket.close();
+        }
     }
 
 }

@@ -15,8 +15,11 @@ public class NodeOne {
     static double[] tempFlexTwo;
     static double[] tempFlexOne;
     static double[] tempFlexThree;
-    //static double[] serverOne;
-    //static double[] serverTwo;
+
+    static double[] serverTwo;
+    static double[] serverThree;
+
+    //static double[] serverThree;
     static double calculatedPAR = 0.0;
     static double lowestPAR = 0.0;
 
@@ -26,7 +29,7 @@ public class NodeOne {
     static double[] optimizedFlexTwo;
     static double[] optimizedFlexOne;
 
-    static int mainServerPort = 10000;
+    //static int mainServerPort = 10000;
     static int nodeTwoPort = 12000;
     static int nodeThreePort = 13000;
 
@@ -35,15 +38,19 @@ public class NodeOne {
 
     public static void main(String[] args) {
 
+        System.out.println("LOL");
+
         if ( serverRunning == 0 ) {
             try {
                 startServer();
                 System.out.println("Server started successfully");
                 serverRunning = 1;
+
             } catch ( Exception e ) {
                 System.out.println("Unable to start server process. Process may be used!");
             }
         }
+
 
     }
 
@@ -60,11 +67,11 @@ public class NodeOne {
         inflexible = new double[] {2.01,1.76,1.76,1.76,1.76,1.76,3.26,4.81,0.56,0.26,0.16,0.16,0.16,0.16,0.16,0.16,0.16,1.76,2.06,0.56,0.71,0.71,2.31,4.81}; // power profile for inflexible loads
         flexibleOne = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,0,0};
         flexibleTwo = new double[] {0,0,0,0,0,0,0,0,1.8,1.8,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-        flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
+        //flexibleThree = new double[] {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2};
 
         int flexOneShift = 8; // flexibleOne can be rightShifted 8 times
         int flexTwoShift = 7; // flexibleTwo can be rightShifted 7 times
-        int flexThreeShift = 7; // flexibleThree can be rightShifted 7 times
+        //int flexThreeShift = 7; // flexibleThree can be rightShifted 7 times
 
         tempArray = new double[24];
         tempFlexTwo = new double[24];
@@ -72,15 +79,22 @@ public class NodeOne {
 
         tempFlexTwo = Arrays.copyOf(flexibleTwo,24);
         tempFlexOne = Arrays.copyOf(flexibleOne,24);
-        //serverOne = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
-        //serverTwo = new int[] {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0};
 
 
         try {
-            sendData(mainServerPort,"Server 1 Start");
+            sendData(nodeTwoPort,"server_two_power.txt");
         } catch ( Exception e ) {
-            System.out.println("Send data failed!");
+            System.out.println("power profile request from node 2 failed!");
         }
+
+        try {
+            sendData(nodeThreePort,"server_three_power.txt");
+        } catch ( Exception e ) {
+            System.out.println("power profile request from node 3 failed!");
+        }
+
+        inflexible = addThreeArray(inflexible,serverTwo,serverThree);
+
         /**
          * This loop finds the lowest PAR between inflexible, flexibleOne and flexibleTwo
          */
@@ -117,7 +131,7 @@ public class NodeOne {
 
                 } else {
                     tempFlexTwo = rightShiftArray(tempFlexTwo);
-                    tempArray = addThreeArray(inflexible, tempFlexOne, tempFlexTwo);
+                    tempArray = addThreeArray(inflexible, tempFlexOne, tempFlexTwo); //
 
                     calculatedPAR = calculatePAR(tempArray);
                     if ( lowestPAR == 0.0 ) {
@@ -153,16 +167,7 @@ public class NodeOne {
         System.out.println("Lowest PAR " + lowestPAR);
         System.out.println("Lowest VAR " + lowestVAR);
         System.out.println("Execution time: " + (endTime - startTime) + "ms");
-        //System.out.println("Verify PAR: " + calculatePAR(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo)));
-        //System.out.println("Verify VAR: " + calculateVAR(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo)));
-        //System.out.println("Power profile 1: " + printArray(optimizedFlexOne));
-        //System.out.println("Power profile 2: " + printArray(optimizedFlexTwo));
 
-        try {
-            sendData(mainServerPort,"Server 1 End");
-        } catch ( Exception e ) {
-            System.out.println("Send data failed!");
-        }
 
         try {
             sendData(nodeTwoPort,"start_algorithm");
@@ -272,6 +277,26 @@ public class NodeOne {
     }
 
     /**
+     * This method adds four array together and returns an array that is summed.
+     * @param array_1
+     * @param array_2
+     * @param array_3
+     * @param array_4
+     * @return array_sum
+     */
+    private static double[] addFourArray(double[] array_1, double[] array_2, double[] array_3, double[] array_4) {
+
+        double[] array_sum = new double[24]; // initialising an empty array
+        int arrayLength = 24;
+
+        for(int i = 0;i < arrayLength; i++) {
+            array_sum[i] = array_1[i] + array_2[i] + array_3[i] + array_4[i];
+        }
+
+        return array_sum;
+    }
+
+    /**
      * This method shifts all the items in an array right.
      * @param array
      * @return right_shifted_array
@@ -295,40 +320,12 @@ public class NodeOne {
         return right_shifted_array;
     }
 
-
-    /**
-     * TODO : To implement client server here!
-     */
-
     /**
      * This function starts the server running.
      * @throws Exception
      */
-    /*
     private static void startServer() throws Exception {
-        String clientSentence;
-        //String capitalizedSentence;
-        ServerSocket welcomeSocket = new ServerSocket(11000);
-        while(true) {
-            Socket connectionSocket = welcomeSocket.accept();
-            BufferedReader inFromClient =
-                    new BufferedReader(new InputStreamReader(
-                            connectionSocket.getInputStream()));
-            DataOutputStream outToClient =
-                    new DataOutputStream(
-                            connectionSocket.getOutputStream());
-            clientSentence = inFromClient.readLine();
-            System.out.println("FROM CLIENT: " + clientSentence);
-            if ( clientSentence.equals("start_algorithm")) {
-                algorithmStart();
-            }
-            /*capitalizedSentence =
-                    clientSentence.toUpperCase() + '\n';
-            outToClient.writeBytes(capitalizedSentence);*/
-       /* }
-    }*/
-
-    private static void startServer() throws Exception {
+        algorithmStart();
         int i = 0;
         try {
             ServerSocket welcomeSocket = new ServerSocket(11000);
@@ -351,30 +348,73 @@ public class NodeOne {
         DataOutputStream outToServer = new DataOutputStream(
                 clientSocket.getOutputStream());
         BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        outToServer.writeBytes(data + '\n');
-        /*modifiedSentence = inFromServer.readLine();
-        System.out.println("FROM SERVER: " + modifiedSentence);*/
-        clientSocket.close();
+
+
+        if ( data.equals("server_two_power.txt") ) {
+
+            outToServer.writeBytes(data + '\n');
+
+            String inputString;
+
+
+            String [] temp;
+
+            File f2 = new File(data);
+            FileOutputStream f2OutStream = new FileOutputStream(f2);
+
+            serverTwo = new double[24];
+            System.out.println("BEFORE WHILE"); // debug; // TODO: STUCK HERE
+            while ((inputString = inFromServer.readLine()) != null ) { // read in what is being returned from the serve
+
+
+                System.out.println("INSIDE WHILE"); // debug;
+                byte inputByte[] = inputString.getBytes();
+                f2OutStream.write(inputByte);
+                f2OutStream.flush();
+                System.out.println("INSIDE WHILE"); // debug;
+
+                temp = inputString.split(" ");
+                for( int j = 0 ; j < 24; j++) {
+                        serverTwo[j] = Double.parseDouble(temp[j]);
+                }
+            }
+
+            f2OutStream.close();
+            System.out.println("AFTER WHILE"); // debug;
+
+        } else if ( data.equals("server_three_power.txt") ) {
+
+            outToServer.writeBytes(data + '\n');
+
+            String inputString;
+
+            String [] temp;
+
+            File f3 = new File(data);
+            FileOutputStream f3OutStream = new FileOutputStream(f3);
+
+            serverThree = new double[24];
+            while ((inputString = inFromServer.readLine()) != null ) { // read in what is being returned from the server
+
+                byte inputByte[] = inputString.getBytes();
+                f3OutStream.write(inputByte);
+                f3OutStream.flush();
+
+                temp = inputString.split(" ");
+                for( int j = 0 ; j < 24; j++) {
+                    serverThree[j] = Double.parseDouble(temp[j]);
+                }
+            }
+
+            f3OutStream.close();
+
+
+
+        } else {
+            outToServer.writeBytes(data + '\n');
+            clientSocket.close();
+        }
     }
-
-    /* Boilerplate for starting client
-    private static void startClient() throws Exception {
-        String sentence;
-        String modifiedSentence;
-        BufferedReader inFromUser = new BufferedReader(
-                new InputStreamReader(System.in));
-        //Socket clientSocket = new Socket("change to server's IP address", 6789);
-        Socket clientSocket = new Socket("127.0.0.1", 6789);
-        DataOutputStream outToServer = new DataOutputStream(
-                clientSocket.getOutputStream());
-        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        sentence = inFromUser.readLine();
-        outToServer.writeBytes(sentence + '\n');
-        modifiedSentence = inFromServer.readLine();
-        System.out.println("FROM SERVER: " + modifiedSentence);
-        clientSocket.close();
-    }(*/
-
 }
 
 
