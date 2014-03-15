@@ -86,14 +86,20 @@ public class NodeOne {
         } catch ( Exception e ) {
             System.out.println("power profile request from node 2 failed!");
         }
-
+        
+        System.out.println("Server request 2 ended successfully");
+        
         try {
             sendData(nodeThreePort,"server_three_power.txt");
         } catch ( Exception e ) {
             System.out.println("power profile request from node 3 failed!");
         }
+        
+        System.out.println("Server request 3 ended successfully");
 
         inflexible = addThreeArray(inflexible,serverTwo,serverThree);
+        
+        System.out.println("After adding");
 
         /**
          * This loop finds the lowest PAR between inflexible, flexibleOne and flexibleTwo
@@ -344,45 +350,79 @@ public class NodeOne {
     }
 
     private static void sendData(int portNum, String data) throws Exception {
-        Socket clientSocket = new Socket("127.0.0.1", portNum);
-        DataOutputStream outToServer = new DataOutputStream(
+        
+    	Socket clientSocket = null;
+    	BufferedReader inFromServer = null;
+    	PrintWriter put=null;
+    	
+    	try
+    	{
+    	clientSocket = new Socket("127.0.0.1", portNum);
+        
+        inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        put=new PrintWriter(clientSocket.getOutputStream(),true);
+    	}
+    	catch(Exception e)
+        {
+    		System.out.println("ERROR");
+        }
+    	
+    	DataOutputStream outToServer = new DataOutputStream(
                 clientSocket.getOutputStream());
-        BufferedReader inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
 
-        if ( data.equals("server_two_power.txt") ) {
+       // if ( data.equals("server_two_power.txt") ) {
 
-            outToServer.writeBytes(data + '\n');
+            //outToServer.writeBytes(data + '\n');
+    		put.println(data);
 
             String inputString;
 
 
-            String [] temp;
+            
 
             File f2 = new File(data);
             FileOutputStream f2OutStream = new FileOutputStream(f2);
 
             serverTwo = new double[24];
-            System.out.println("BEFORE WHILE"); // debug; // TODO: STUCK HERE
-            while ((inputString = inFromServer.readLine()) != null ) { // read in what is being returned from the serve
-
-
-                System.out.println("INSIDE WHILE"); // debug;
+            serverThree = new double[24];
+            System.out.println("BEFORE WHILE blahblahblah"); // debug; // TODO: STUCK HERE
+            //System.out.println(inFromServer.readLine());
+            while ((inputString = inFromServer.readLine())!=null ) { // read in what is being returned from the server
+            	
+            	String [] temp;
+                System.out.println("INSIDE WHILE blah"); // debug;
                 byte inputByte[] = inputString.getBytes();
                 f2OutStream.write(inputByte);
                 f2OutStream.flush();
-                System.out.println("INSIDE WHILE"); // debug;
-
+                //System.out.println("INSIDE WHILE"); // debug;
+                
+                
                 temp = inputString.split(" ");
-                for( int j = 0 ; j < 24; j++) {
-                        serverTwo[j] = Double.parseDouble(temp[j]);
-                }
+                
+                if (data.equals("server_two_power.txt")){
+                  	 for( int j = 0 ; j < 24; j++) {
+                  		System.out.println("write 2");
+                           serverTwo[j] = Double.parseDouble(temp[j]);
+                  }
+                   }
+                  	 
+                  	 if (data.equals("server_three_power.txt")){
+                      	 for( int j = 0 ; j < 24; j++) {
+                      		System.out.println("write 3");
+                               serverThree[j] = Double.parseDouble(temp[j]);
+                      }
+                  	 }
+               
+                
             }
+            
 
             f2OutStream.close();
             System.out.println("AFTER WHILE"); // debug;
+            clientSocket.close();
 
-        } else if ( data.equals("server_three_power.txt") ) {
+        /*} else if ( data.equals("server_three_power.txt") ) {
 
             outToServer.writeBytes(data + '\n');
 
@@ -394,7 +434,7 @@ public class NodeOne {
             FileOutputStream f3OutStream = new FileOutputStream(f3);
 
             serverThree = new double[24];
-            while ((inputString = inFromServer.readLine()) != null ) { // read in what is being returned from the server
+            while ((inputString = inFromServer.readLine())!=null ) { // read in what is being returned from the server
 
                 byte inputByte[] = inputString.getBytes();
                 f3OutStream.write(inputByte);
@@ -413,7 +453,7 @@ public class NodeOne {
         } else {
             outToServer.writeBytes(data + '\n');
             clientSocket.close();
-        }
+        }*/
     }
 }
 

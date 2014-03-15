@@ -6,28 +6,39 @@ import java.net.*;
  * Constructor takes in
  */
 public class multiThreadedComms implements Runnable {
-
+	
+	//private ServerSocket master;
     private Socket server;
     private String clientSentence;
     private int nodeNum;
 
-    multiThreadedComms(Socket server, int nodeNum) {
+    //multiThreadedComms(ServerSocket master, Socket server, int nodeNum) {
+    	multiThreadedComms(Socket server, int nodeNum) {
+    	//this.master = master;
         this.server = server;
         this.nodeNum = nodeNum;
     }
 
     public void run() {
-
+    	
+    	PrintWriter put = null;
+    	BufferedReader inFromClient = null;
+    	
+    	
+    	
         try {
-            BufferedReader inFromClient =
+        	
+        	 put = new PrintWriter(server.getOutputStream(), true); // output stream for sending stuff back to client
+            
+        	 inFromClient =
             new BufferedReader(new InputStreamReader(
                             server.getInputStream()));
-            DataOutputStream outToClient = new DataOutputStream(
-                            server.getOutputStream());
+            //DataOutputStream outToClient = new DataOutputStream(
+                            //server.getOutputStream());
             clientSentence = inFromClient.readLine();
 
-            PrintWriter put = new PrintWriter(server.getOutputStream(), true); // output stream for sending stuff back to client
-
+            BufferedReader fileBufferedReader = new BufferedReader(new FileReader("/Users/JooSiong/Documents/GitHub/george_java_clientserver/Algorithm/" + clientSentence));;
+            
             System.out.println("FROM CLIENT: " + clientSentence);
 
             // Upon receiving the start_algorithm command, the thread calls the algorithmStart() method in the respective object
@@ -40,35 +51,47 @@ public class multiThreadedComms implements Runnable {
                     NodeThree.algorithmStart();
             }
 
-            if ( clientSentence.equals("server_one_power.txt")) {
+            //if ( clientSentence.equals("server_one_power.txt")) {
+            else{
                     File f1 = new File(clientSentence);
                     if (f1.exists()) {
-                        BufferedReader fileBufferedReader = new BufferedReader(new FileReader("/Users/george/Dropbox/interpc/EE4210 Project Workspace/Algorithm/bin/" + clientSentence));
-                        String line;
-                        line = fileBufferedReader.readLine();
-
-                        while ( line != null ) {
+                        //BufferedReader fileBufferedReader = new BufferedReader(new FileReader("/Users/george/Dropbox/interpc/EE4210 Project Workspace/Algorithm/bin/" + clientSentence));
+                    	//BufferedReader fileBufferedReader = new BufferedReader(new FileReader(clientSentence));
+                    	String line;
+                        //line = fileBufferedReader.readLine();
+                        
+                        System.out.println("BEFORE WHILE haha");
+                        //System.out.println(fileBufferedReader.readLine());
+                        while ( (line = fileBufferedReader.readLine())!=null ) {
+                        	System.out.println(line);// debug;
+                        	System.out.println("within WHILE haha"); // debug;
                             put.write(line);
                             put.flush();
                         }
+                        System.out.println("after WHILE haha"); // debug;
                         fileBufferedReader.close();
+                        server.close();
+                        //master.close();
                     }
             }
 
+            
+            /*
             if ( clientSentence.equals("server_two_power.txt")) {
                 System.out.println("ENTER LOOP"); // debug
                 File f2 = new File(clientSentence);
                 if (f2.exists()) {
-
                     System.out.println("ENTER EXISTS"); // debug;
-                    BufferedReader fileBufferedReader = new BufferedReader(new FileReader("/Users/george/Dropbox/interpc/EE4210 Project Workspace/Algorithm/bin/" + clientSentence));
+                    //BufferedReader fileBufferedReader = new BufferedReader(new FileReader("/Users/george/Dropbox/interpc/EE4210 Project Workspace/Algorithm/bin/" + clientSentence));
+                    //BufferedReader fileBufferedReader = new BufferedReader(new FileReader(clientSentence));
                     String line;
                     //line = fileBufferedReader.readLine();
 
 
-                    System.out.println("BEFORE WHILE"); // debug;
-                    while ((line = fileBufferedReader.readLine()) != null ) {
-                        System.out.println("INSIDE WHILE!"); // debug
+                    System.out.println("BEFORE WHILE haha"); // debug;
+                    System.out.println(fileBufferedReader.readLine());
+                    while ((line = fileBufferedReader.readLine())!=null) {
+                        System.out.println("INSIDE WHILE! haha"); // debug
                         put.write(line);
                         put.flush();
                     }
@@ -80,8 +103,9 @@ public class multiThreadedComms implements Runnable {
             if ( clientSentence.equals("server_three_power.txt")) {
                 File f3 = new File(clientSentence);
                 if (f3.exists()) {
-                    BufferedReader fileBufferedReader = new BufferedReader(new FileReader("/Users/george/Dropbox/interpc/EE4210 Project Workspace/Algorithm/bin/" + clientSentence));
-                    String line;
+                    //BufferedReader fileBufferedReader = new BufferedReader(new FileReader("/Users/george/Dropbox/interpc/EE4210 Project Workspace/Algorithm/bin/" + clientSentence));
+                	//BufferedReader fileBufferedReader = new BufferedReader(new FileReader(clientSentence));
+                	String line;
                     line = fileBufferedReader.readLine();
 
                     System.out.println("BEFORE WHILE"); // debug;
@@ -93,12 +117,13 @@ public class multiThreadedComms implements Runnable {
                     System.out.println("AFTER WHILE"); // debug
                     fileBufferedReader.close();
                 }
-            }
+            }*/
 
         } catch ( IOException ioe ) {
             System.out.println("IOException on socket listen: " + ioe );
             ioe.printStackTrace();
         }
-
+	
     }
+    
 }
