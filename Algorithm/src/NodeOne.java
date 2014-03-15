@@ -371,7 +371,7 @@ public class NodeOne {
                 clientSocket.getOutputStream());
 
 
-       // if ( data.equals("server_two_power.txt") ) {
+        if ( !data.equals("start_algorithm") ) {
 
             //outToServer.writeBytes(data + '\n');
     		put.println(data);
@@ -447,13 +447,13 @@ public class NodeOne {
             }
 
             f3OutStream.close();
-
+		*/
 
 
         } else {
             outToServer.writeBytes(data + '\n');
             clientSocket.close();
-        }*/
+        }
     }
 }
 

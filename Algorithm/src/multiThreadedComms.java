@@ -37,7 +37,7 @@ public class multiThreadedComms implements Runnable {
                             //server.getOutputStream());
             clientSentence = inFromClient.readLine();
 
-            BufferedReader fileBufferedReader = new BufferedReader(new FileReader("/Users/JooSiong/Documents/GitHub/george_java_clientserver/Algorithm/" + clientSentence));;
+            //BufferedReader fileBufferedReader = new BufferedReader(new FileReader("/Users/JooSiong/Documents/GitHub/george_java_clientserver/Algorithm/" + clientSentence));;
             
             System.out.println("FROM CLIENT: " + clientSentence);
 
@@ -57,6 +57,7 @@ public class multiThreadedComms implements Runnable {
                     if (f1.exists()) {
                         //BufferedReader fileBufferedReader = new BufferedReader(new FileReader("/Users/george/Dropbox/interpc/EE4210 Project Workspace/Algorithm/bin/" + clientSentence));
                     	//BufferedReader fileBufferedReader = new BufferedReader(new FileReader(clientSentence));
+                    	BufferedReader fileBufferedReader = new BufferedReader(new FileReader("/Users/JooSiong/Documents/GitHub/george_java_clientserver/Algorithm/" + clientSentence));;
                     	String line;
                         //line = fileBufferedReader.readLine();
                         
