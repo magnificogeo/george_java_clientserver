@@ -174,6 +174,8 @@ public class NodeOne {
         System.out.println("Lowest VAR " + lowestVAR);
         System.out.println("Execution time: " + (endTime - startTime) + "ms");
 
+        // TODO: Write to file
+        // TODO: Detect terminating condition
 
         try {
             sendData(nodeTwoPort,"start_algorithm");
@@ -338,6 +340,8 @@ public class NodeOne {
 
             while ((i++ < maxConnections || maxConnections == 0)) {
 
+                System.out.println("I IS :" + i);
+
                 Socket connectionSocket = welcomeSocket.accept();
                 multiThreadedComms connection = new multiThreadedComms(connectionSocket,1);
                 Thread t = new Thread(connection);
@@ -379,75 +383,39 @@ public class NodeOne {
             String inputString;
 
 
-            
-
             File f2 = new File(data);
             FileOutputStream f2OutStream = new FileOutputStream(f2);
 
             serverTwo = new double[24];
             serverThree = new double[24];
-            System.out.println("BEFORE WHILE blahblahblah"); // debug; // TODO: STUCK HERE
-            //System.out.println(inFromServer.readLine());
+
             while ((inputString = inFromServer.readLine())!=null ) { // read in what is being returned from the server
             	
             	String [] temp;
-                System.out.println("INSIDE WHILE blah"); // debug;
+
                 byte inputByte[] = inputString.getBytes();
                 f2OutStream.write(inputByte);
                 f2OutStream.flush();
-                //System.out.println("INSIDE WHILE"); // debug;
-                
-                
+
                 temp = inputString.split(" ");
                 
                 if (data.equals("server_two_power.txt")){
                   	 for( int j = 0 ; j < 24; j++) {
-                  		System.out.println("write 2");
                            serverTwo[j] = Double.parseDouble(temp[j]);
                   }
                    }
                   	 
-                  	 if (data.equals("server_three_power.txt")){
-                      	 for( int j = 0 ; j < 24; j++) {
-                      		System.out.println("write 3");
-                               serverThree[j] = Double.parseDouble(temp[j]);
-                      }
-                  	 }
-               
-                
+                 if (data.equals("server_three_power.txt")){
+                     for( int j = 0 ; j < 24; j++) {
+                           serverThree[j] = Double.parseDouble(temp[j]);
+                     }
+                 }
             }
             
 
             f2OutStream.close();
-            System.out.println("AFTER WHILE"); // debug;
+
             clientSocket.close();
-
-        /*} else if ( data.equals("server_three_power.txt") ) {
-
-            outToServer.writeBytes(data + '\n');
-
-            String inputString;
-
-            String [] temp;
-
-            File f3 = new File(data);
-            FileOutputStream f3OutStream = new FileOutputStream(f3);
-
-            serverThree = new double[24];
-            while ((inputString = inFromServer.readLine())!=null ) { // read in what is being returned from the server
-
-                byte inputByte[] = inputString.getBytes();
-                f3OutStream.write(inputByte);
-                f3OutStream.flush();
-
-                temp = inputString.split(" ");
-                for( int j = 0 ; j < 24; j++) {
-                    serverThree[j] = Double.parseDouble(temp[j]);
-                }
-            }
-
-            f3OutStream.close();
-		*/
 
 
         } else {
