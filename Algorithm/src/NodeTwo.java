@@ -414,6 +414,38 @@ private static void sendData(int portNum, String data) throws Exception {
             clientSocket.close();
         }
     }
+
+
+	private static void arrayToFile(double array[]){
+		String[] temp = new String[array.length];
+	
+		for (int i=0; i<array.length; i++){
+			temp[i] = String.valueOf(array[i]);
+		}
+	
+		try{  
+			FileWriter fr = new FileWriter("server_two_power.txt");  
+			BufferedWriter br = new BufferedWriter(fr);  
+			PrintWriter out = new PrintWriter(br);  
+			for(int i=0; i<temp.length; i++){  
+				if(temp[i] != null)  
+                     
+					out.write(temp[i] + " ");  
+                 	//out.write("\n");         
+			}  
+          	out.close();  
+             
+             
+		}  
+         
+		catch(IOException e){  
+			System.out.println(e);     
+		}  
+	}
+
+
+
+
 }
 
 
