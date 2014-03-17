@@ -42,19 +42,56 @@ public class multiThreadedComms implements Runnable {
                 if ( nodeNum == 3 )
                     NodeThree.algorithmStart();
             } else {
-                    File f1 = new File(clientSentence);
+                    /*File f1 = new File(clientSentence);
                     if (f1.exists()) {
                     	BufferedReader fileBufferedReader = new BufferedReader(new FileReader(clientSentence));
-                    	String line;
-
-                        
+                    	String line;*/
+                    	
+                    	
+                    	
+                    	if(clientSentence.equals("server_one_power.txt")){
+                    		String resultOne = " ";
+                    		for (int i=0; i<NodeOne.optimizedTotalPAR.length; i++){
+                    			String string = String.valueOf(NodeOne.optimizedTotalPAR);
+                    			resultOne = resultOne + " " + string;
+                    		}
+                    		put.write(resultOne);
+                            put.flush();
+                    	}
+                    	
+                    	if(clientSentence.equals("server_two_power.txt")){
+                    		//System.out.println("Enter");
+                    		String resultTwo = " ";
+                    		for (int i=0; i<NodeTwo.optimizedTotalPAR.length; i++){
+                    			//System.out.println("Within");
+                    			String string = String.valueOf(NodeTwo.optimizedTotalPAR);
+                    			resultTwo = resultTwo + " " + string;
+                    		}
+                    		put.write(resultTwo);
+                    		//System.out.println("Writes");
+                            put.flush();
+                    	}
+                    	
+                    	if(clientSentence.equals("server_three_power.txt")){
+                    		String resultThree = " ";
+                    		for (int i=0; i<NodeThree.optimizedTotalPAR.length; i++){
+                    			String string = String.valueOf(NodeThree.optimizedTotalPAR);
+                    			resultThree = resultThree + " " + string;
+                    		}
+                    		put.write(resultThree);
+                            put.flush();
+                    	}
+                    	server.close();
+                    	
+                    	
+                        /*
                         while ( (line = fileBufferedReader.readLine())!=null ) {
                             put.write(line);
                             put.flush();
                         }
                         fileBufferedReader.close();
                         server.close();
-                    }
+                    }*/
             }
 
         } catch ( IOException ioe ) {

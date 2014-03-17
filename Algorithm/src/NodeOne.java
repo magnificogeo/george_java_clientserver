@@ -29,7 +29,7 @@ public class NodeOne {
     static double[] optimizedFlexOne; // array to store the optimized power profile for flexible appliance 1 for lowest PAR
     static double[] optimizedFlexOneVAR; // array to store the optimized power profile for flexible appliance 1 for lowest VAR
     static double[] optimizedFlexTwoVAR; // array to store the optimized power profile for flexible appliance 2 for lowest VAR
-    static double[] optimizedTotalPAR; // array to store the optimized power profile for lowest PAR
+    static double[] optimizedTotalPAR = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // array to store the optimized power profile for lowest PAR
     static double[] optimizedTotalVAR; // aray to store the optimized power profile for the lowest VAR
 
     static int nodeTwoPort = 12000;
