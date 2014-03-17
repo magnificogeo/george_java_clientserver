@@ -15,26 +15,30 @@ public class NodeThree {
     static double[] tempArray;
     static double[] tempFlexTwo;
     static double[] tempFlexOne;
+
     static double[] serverOne;
     static double[] serverTwo;
+
     static double calculatedPAR = 0.0;
     static double lowestPAR = 0.0;
 
     static double calculatedVAR = 0.0;
     static double lowestVAR = 0.0;
 
-    static double[] optimizedFlexTwo;
-    static double[] optimizedFlexOne;
+    static double[] optimizedFlexTwo; // array to store the optimized power profile for flexible appliance 2 for lowest PAR
+    static double[] optimizedFlexOne; // array to store the optimized power profile for flexible appliance 1 for lowest PAR
+    static double[] optimizedFlexOneVAR; // array to store the optimized power profile for flexible appliance 1 for lowest VAR
+    static double[] optimizedFlexTwoVAR; // array to store the optimized power profile for flexible appliance 2 for lowest VAR
+    static double[] optimizedTotalPAR; // array to store the optimized power profile for lowest PAR
+    static double[] optimizedTotalVAR; // aray to store the optimized power profile for the lowest VAR
 
-    static int mainServerPort = 10000;
     static int nodeTwoPort = 12000;
     static int nodeOnePort = 11000;
 
     static int serverRunning = 0;
-    static int maxConnections = 500;
+    static int maxConnections = 1000;
 
     public static void main(String[] args) {
-
         if ( serverRunning == 0 ) {
             try {
                 startServer();
@@ -44,12 +48,10 @@ public class NodeThree {
                 System.out.println("Unable to start server process. Process may be used!");
             }
         }
-
     }
 
     /**
      * This is the main method that does the optimizations for the power profile!
-     * TODO Add serverOne and serverTwo power profiles as input arguments here....
      */
     public static void algorithmStart() {
         /**
@@ -130,21 +132,25 @@ public class NodeThree {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
+                        optimizedTotalPAR = addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo);
                     } else if ( calculatedPAR < lowestPAR ) {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
+                        optimizedTotalPAR = addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo);
                     }
 
                     calculatedVAR = calculateVAR(tempArray);
                     if ( lowestVAR == 0.0 ) {
                         lowestVAR = calculatedVAR;
-                        optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
-                        optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
+                        optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
+                        optimizedFlexTwoVAR = Arrays.copyOf(tempFlexTwo,24);
+                        optimizedTotalVAR = addThreeArray(inflexible,optimizedFlexOneVAR,optimizedFlexTwoVAR);
                     } else if ( calculatedVAR < lowestVAR ) {
                         lowestVAR = calculatedVAR;
-                        optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
-                        optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
+                        optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
+                        optimizedFlexTwoVAR = Arrays.copyOf(tempFlexTwo,24);
+                        optimizedTotalVAR = addThreeArray(inflexible,optimizedFlexOneVAR,optimizedFlexTwoVAR);
                     }
 
                     System.out.println("PAR :" + calculatedPAR);
@@ -158,6 +164,8 @@ public class NodeThree {
 
         System.out.println("Lowest PAR " + lowestPAR);
         System.out.println("Lowest VAR " + lowestVAR);
+        //printArray(optimizedTotalPAR);
+        //printArray(optimizedFlexOneVAR);
         System.out.println("Execution time: " + (endTime - startTime) + "ms");
 
         // TODO: Write to file
@@ -395,10 +403,7 @@ public class NodeThree {
                         serverTwo[j] = Double.parseDouble(temp[j]);
                     }
                 }
-
-
             }
-
 
             f2OutStream.close();
 

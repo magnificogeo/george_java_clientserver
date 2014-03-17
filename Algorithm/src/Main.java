@@ -6,7 +6,7 @@ import java.util.logging.Logger;
  * This class contains the code for one of the server. All nodes start off as a server, listening for command, before executing :)
  */
 
-
+/*
 public class Main {
 
     static int nodeOnePort = 11000;
@@ -14,18 +14,6 @@ public class Main {
     static int nodeThreePort = 13000;
 
     static int cycles = 0;
-    /*static double final_system_profile;
-
-    static double[] nodeOneProfile;
-    static double[] nodeTwoProfile;
-    static double[] nodeThreeProfile;
-
-    static double final_system_PAR;
-    static double final_system_VAR;
-
-    static double nodeOnePAR;
-    static double nodeTwoPAR;
-    static double nodeThreePAR;*/
 
     public static void main(String[] args) {
 
@@ -48,12 +36,13 @@ public class Main {
                 }
 
         }
-    }
+    } */
 
     /**
      * This function starts the server running.
      * @throws Exception
      */
+    /*
     private static void startServer() throws Exception {
         String clientSentence;
         ServerSocket welcomeSocket = new ServerSocket(10000);
@@ -107,9 +96,7 @@ public class Main {
         clientSocket.close();
     }
 
-
-
-}
+} */
 
 
 

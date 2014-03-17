@@ -12,7 +12,7 @@ public class NodeTwo {
     static double[] flexibleTwo;
     static double[] flexibleThree;
     static double[] tempArray;
-    static double[] tempFlexTwo;
+
     static double[] tempFlexOne;
     static double[] tempFlexThree;
 
@@ -25,19 +25,20 @@ public class NodeTwo {
     static double calculatedVAR = 0.0;
     static double lowestVAR = 0.0;
 
-    //static double[] optimizedFlexTwo;
-    static double[] optimizedFlexOne;
-    static double[] optimizedFlexThree;
+    static double[] optimizedFlexThree; // array to store the optimized power profile for flexible appliance 3 for lowest PAR
+    static double[] optimizedFlexOne; // array to store the optimized power profile for flexible appliance 1 for lowest PAR
+    static double[] optimizedFlexOneVAR; // array to store the optimized power profile for flexible appliance 1 for lowest VAR
+    static double[] optimizedFlexThreeVAR; // array to store the optimized power profile for flexible appliance 3 for lowest VAR
+    static double[] optimizedTotalPAR; // array to store the optimized power profile for lowest PAR
+    static double[] optimizedTotalVAR; // aray to store the optimized power profile for the lowest VAR
 
-    static int mainServerPort = 10000;
     static int nodeOnePort = 11000;
     static int nodeThreePort = 13000;
 
     static int serverRunning = 0;
-    static int maxConnections = 500;
+    static int maxConnections = 1000;
 
     public static void main(String[] args) {
-
         if ( serverRunning == 0 ) {
             try {
                 startServer();
@@ -47,12 +48,10 @@ public class NodeTwo {
                 System.out.println("Unable to start server process. Process may be used!");
             }
         }
-
     }
 
     /**
      * This is the main method that does the optimizations for the power profile!
-     * TODO Add serverOne and serverTwo power profiles as input arguments here....
      */
     public static void algorithmStart() {
         /**
@@ -134,21 +133,25 @@ public class NodeTwo {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexThree = Arrays.copyOf(tempFlexThree,24);
+                        optimizedTotalPAR = addThreeArray(inflexible, optimizedFlexOne, optimizedFlexThree);
                     } else if ( calculatedPAR < lowestPAR ) {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexThree = Arrays.copyOf(tempFlexThree,24);
+                        optimizedTotalPAR = addThreeArray(inflexible, optimizedFlexOne, optimizedFlexThree);
                     }
 
                     calculatedVAR = calculateVAR(tempArray);
                     if ( lowestVAR == 0.0 ) {
                         lowestVAR = calculatedVAR;
-                        optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
-                        optimizedFlexThree = Arrays.copyOf(tempFlexThree,24);
+                        optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
+                        optimizedFlexThreeVAR = Arrays.copyOf(tempFlexThree,24);
+                        optimizedTotalVAR = addThreeArray(inflexible, optimizedFlexOneVAR, optimizedFlexThreeVAR);
                     } else if ( calculatedVAR < lowestVAR ) {
                         lowestVAR = calculatedVAR;
-                        optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
-                        optimizedFlexThree = Arrays.copyOf(tempFlexThree,24);
+                        optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
+                        optimizedFlexThreeVAR = Arrays.copyOf(tempFlexThree,24);
+                        optimizedTotalVAR = addThreeArray(inflexible, optimizedFlexOneVAR, optimizedFlexThreeVAR);
                     }
 
                     System.out.println("PAR :" + calculatedPAR);
@@ -162,6 +165,8 @@ public class NodeTwo {
 
         System.out.println("Lowest PAR " + lowestPAR);
         System.out.println("Lowest VAR " + lowestVAR);
+        //printArray(optimizedTotalPAR);
+        //printArray(optimizedTotalVAR);
         System.out.println("Execution time: " + (endTime - startTime) + "ms");
 
         // TODO: Write to file
