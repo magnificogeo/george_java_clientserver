@@ -47,6 +47,7 @@ public class multiThreadedComms implements Runnable {
                     	BufferedReader fileBufferedReader = new BufferedReader(new FileReader(clientSentence));
                     	String line;
 
+                        
                         while ( (line = fileBufferedReader.readLine())!=null ) {
                             put.write(line);
                             put.flush();
