@@ -166,19 +166,6 @@ public class NodeTwo {
         System.out.println("Lowest PAR " + lowestPAR);
         System.out.println("Lowest VAR " + lowestVAR);
 
-        /*multiThreadedIO fileIO = new multiThreadedIO(optimizedTotalPAR,"server_two_power.txt");
-        Thread tIO = new Thread(fileIO);
-        tIO.start();
-
-        multiThreadedIO fileIO_2 = new multiThreadedIO(optimizedTotalVAR,"server_two_power_VAR.txt");
-        Thread tIO_2 = new Thread(fileIO_2);
-        tIO_2.start();
-
-        multiThreadedIO fileIO_3 = new multiThreadedIO(optimizedTotalPAR,"server_two_power_PAR.txt");
-        Thread tIO_3 = new Thread(fileIO_3);
-        tIO_3.start();*/
-
-
         System.out.println("Execution time: " + (endTime - startTime) + "ms");
 
         // TODO: Write to file

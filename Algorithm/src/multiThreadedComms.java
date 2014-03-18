@@ -42,13 +42,7 @@ public class multiThreadedComms implements Runnable {
                 if ( nodeNum == 3 )
                     NodeThree.algorithmStart();
             } else {
-                    /*File f1 = new File(clientSentence);
-                    if (f1.exists()) {
-                    	BufferedReader fileBufferedReader = new BufferedReader(new FileReader(clientSentence));
-                    	String line;*/
-                    	
-                    	
-                    	
+
                     	if(clientSentence.equals("server_one_power.txt")){
                     		String resultOne = " ";
                     		for (int i=0; i<NodeOne.optimizedTotalPAR.length; i++){
@@ -83,15 +77,7 @@ public class multiThreadedComms implements Runnable {
                     	}
                     	server.close();
                     	
-                    	
-                        /*
-                        while ( (line = fileBufferedReader.readLine())!=null ) {
-                            put.write(line);
-                            put.flush();
-                        }
-                        fileBufferedReader.close();
-                        server.close();
-                    }*/
+
             }
 
         } catch ( IOException ioe ) {
