@@ -30,7 +30,7 @@ public class NodeOne {
     static double[] optimizedFlexOneVAR; // array to store the optimized power profile for flexible appliance 1 for lowest VAR
     static double[] optimizedFlexTwoVAR; // array to store the optimized power profile for flexible appliance 2 for lowest VAR
     static double[] optimizedTotalPAR = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // array to store the optimized power profile for lowest PAR
-    static double[] optimizedTotalVAR = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // aray to store the optimized power profile for the lowest VAR
+    static double[] optimizedTotalVAR = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // array to store the optimized power profile for the lowest VAR
 
 
     static int nodeTwoPort = 12000;
@@ -40,7 +40,6 @@ public class NodeOne {
     static int maxConnections = 1000;
 
     public static void main(String[] args) {
-        System.out.println("LOL");
 
         if ( serverRunning == 0 ) {
             try {
@@ -175,7 +174,7 @@ public class NodeOne {
 
         // TODO: Write to file
         // TODO: Detect terminating condition
-        
+
 
         try {
             sendData(nodeTwoPort,"start_algorithm");

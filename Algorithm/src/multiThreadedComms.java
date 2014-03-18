@@ -54,15 +54,15 @@ public class multiThreadedComms implements Runnable {
                     	}
                     	
                     	if(clientSentence.equals("server_two_power.txt")){
-                    		//System.out.println("Enter");
+
                     		String resultTwo = " ";
                     		for (int i=0; i<NodeTwo.optimizedTotalPAR.length; i++){
-                    			//System.out.println("Within");
+
                     			String string = String.valueOf(NodeTwo.optimizedTotalPAR);
                     			resultTwo = resultTwo + " " + string;
                     		}
                     		put.write(resultTwo);
-                    		//System.out.println("Writes");
+
                             put.flush();
                     	}
                     	
