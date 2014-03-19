@@ -24,11 +24,12 @@ public class multiThreadedComms implements Runnable {
 
         try {
         	
-        	 put = new PrintWriter(server.getOutputStream(), true); // output stream for sending stuff back to client
+        	// put = new PrintWriter(server.getOutputStream(), true); // output stream for sending stuff back to client
             
         	 inFromClient =
-            new BufferedReader(new InputStreamReader(
-                            server.getInputStream()));
+            new BufferedReader(new InputStreamReader(server.getInputStream()));
+        	DataOutputStream outToClient = new DataOutputStream(server.getOutputStream());
+        	
             clientSentence = inFromClient.readLine();
 
             System.out.println("FROM CLIENT: " + clientSentence);
@@ -44,36 +45,55 @@ public class multiThreadedComms implements Runnable {
             } else {
 
                     	if(clientSentence.equals("server_one_power.txt")){
-                    		String resultOne = " ";
+                    		System.out.println("Enter Server1: ");
+                    		
+                    		String resultOne = "";
+                    	
                     		for (int i=0; i<NodeOne.optimizedTotalPAR.length; i++){
-                    			String string = String.valueOf(NodeOne.optimizedTotalPAR);
+                    			String string = String.valueOf(NodeOne.optimizedTotalPAR[i]);
                     			resultOne = resultOne + " " + string;
                     		}
-                    		put.write(resultOne);
-                            put.flush();
+                    		
+                    		System.out.println("Write CLIENT by 1:" +resultOne );
+                    		
+                    		outToClient.writeBytes(resultOne);
+                    		//put.write(resultOne);
+                            //put.flush();
                     	}
                     	
                     	if(clientSentence.equals("server_two_power.txt")){
+                    		
+                    		System.out.println("Enter Server2: ");
 
-                    		String resultTwo = " ";
+                    		String resultTwo = "";
                     		for (int i=0; i<NodeTwo.optimizedTotalPAR.length; i++){
 
-                    			String string = String.valueOf(NodeTwo.optimizedTotalPAR);
+                    			String string = String.valueOf(NodeTwo.optimizedTotalPAR[i]);
                     			resultTwo = resultTwo + " " + string;
                     		}
-                    		put.write(resultTwo);
-
-                            put.flush();
+                    		
+                    		System.out.println("Write CLIENT by 2:" +resultTwo );
+                    		
+                    		outToClient.writeBytes(resultTwo);
+                    		//put.write(resultTwo);
+                            //put.flush();
                     	}
                     	
                     	if(clientSentence.equals("server_three_power.txt")){
-                    		String resultThree = " ";
+                    		
+                    		System.out.println("Enter Server3: ");
+                    		
+                    		String resultThree = "";
                     		for (int i=0; i<NodeThree.optimizedTotalPAR.length; i++){
-                    			String string = String.valueOf(NodeThree.optimizedTotalPAR);
+                    			String string = String.valueOf(NodeThree.optimizedTotalPAR[i]);
                     			resultThree = resultThree + " " + string;
                     		}
-                    		put.write(resultThree);
-                            put.flush();
+                    		
+                    		System.out.println("Write CLIENT by 3:" +resultThree );
+                    		
+                    		outToClient.writeBytes(resultThree);
+                    		//put.write(resultThree);
+                            //put.flush();
                     	}
                     	server.close();
                     	

@@ -110,14 +110,14 @@ public class NodeTwo {
                     calculatedPAR = calculatePAR(tempArray);
                     if ( lowestPAR == 0.0 )
                         lowestPAR = calculatedPAR;
-                    else if ( calculatedPAR < lowestPAR ) {
+                    else if ( calculatedPAR <= lowestPAR ) {
                         lowestPAR = calculatedPAR;
                     }
 
                     calculatedVAR = calculateVAR(tempArray);
                     if ( lowestVAR == 0.0 )
                         lowestVAR = calculatedVAR;
-                    else if ( calculatedVAR < lowestVAR ) {
+                    else if ( calculatedVAR <= lowestVAR ) {
                         lowestVAR = calculatedVAR;
                     }
 
@@ -134,7 +134,7 @@ public class NodeTwo {
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexThree = Arrays.copyOf(tempFlexThree,24);
                         optimizedTotalPAR = addThreeArray(inflexible, optimizedFlexOne, optimizedFlexThree);
-                    } else if ( calculatedPAR < lowestPAR ) {
+                    } else if ( calculatedPAR <= lowestPAR ) {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexThree = Arrays.copyOf(tempFlexThree,24);
@@ -147,7 +147,7 @@ public class NodeTwo {
                         optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexThreeVAR = Arrays.copyOf(tempFlexThree,24);
                         optimizedTotalVAR = addThreeArray(inflexible, optimizedFlexOneVAR, optimizedFlexThreeVAR);
-                    } else if ( calculatedVAR < lowestVAR ) {
+                    } else if ( calculatedVAR <= lowestVAR ) {
                         lowestVAR = calculatedVAR;
                         optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexThreeVAR = Arrays.copyOf(tempFlexThree,24);
@@ -350,14 +350,14 @@ private static void sendData(int portNum, String data) throws Exception {
 
         Socket clientSocket = null;
         BufferedReader inFromServer = null;
-        PrintWriter put=null;
+        //PrintWriter put=null;
 
         try
         {
             clientSocket = new Socket("127.0.0.1", portNum);
 
             inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            put=new PrintWriter(clientSocket.getOutputStream(),true);
+            //put=new PrintWriter(clientSocket.getOutputStream(),true);
         }
         catch(Exception e)
         {
@@ -370,14 +370,14 @@ private static void sendData(int portNum, String data) throws Exception {
 
         if ( !data.equals("start_algorithm") ) {
 
-            //outToServer.writeBytes(data + '\n');
-            put.println(data);
+            outToServer.writeBytes(data + '\n');
+            //put.println(data);
 
             String inputString;
 
 
-            File f2 = new File(data);
-            FileOutputStream f2OutStream = new FileOutputStream(f2);
+            //File f2 = new File(data);
+            //FileOutputStream f2OutStream = new FileOutputStream(f2);
 
             serverOne = new double[24];
             serverThree = new double[24];
@@ -386,21 +386,23 @@ private static void sendData(int portNum, String data) throws Exception {
 
                 String [] temp;
 
-                byte inputByte[] = inputString.getBytes();
-                f2OutStream.write(inputByte);
-                f2OutStream.flush();
+                //byte inputByte[] = inputString.getBytes();
+                //f2OutStream.write(inputByte);
+                //f2OutStream.flush();
+                
+                System.out.println("Received by 2 inputstring :" + inputString);
 
                 temp = inputString.split(" ");
 
                 if (data.equals("server_one_power.txt")){
-                    for( int j = 0 ; j < 24; j++) {
-                        serverOne[j] = Double.parseDouble(temp[j]);
+                    for( int j = 1 ; j < 24; j++) {
+                        serverOne[j-1] = Double.valueOf(temp[j]);
                     }
                 }
 
                 if (data.equals("server_three_power.txt")){
-                    for( int j = 0 ; j < 24; j++) {
-                        serverThree[j] = Double.parseDouble(temp[j]);
+                    for( int j = 1 ; j < 24; j++) {
+                        serverThree[j-1] = Double.valueOf(temp[j]);
                     }
                 }
 
@@ -408,12 +410,13 @@ private static void sendData(int portNum, String data) throws Exception {
             }
 
 
-            f2OutStream.close();
+            //f2OutStream.close();
 
             clientSocket.close();
 
 
         } else {
+        	System.out.println("sent req to node 3 to start");
             outToServer.writeBytes(data + '\n');
             clientSocket.close();
         }

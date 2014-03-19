@@ -114,14 +114,14 @@ public class NodeOne {
                     if ( lowestPAR == 0.0 )
                         lowestPAR = calculatedPAR;
 
-                    else if ( calculatedPAR < lowestPAR ) {
+                    else if ( calculatedPAR <= lowestPAR ) {
                         lowestPAR = calculatedPAR;
                     }
 
                     calculatedVAR = calculateVAR(tempArray);
                     if ( lowestVAR == 0.0 )
                         lowestVAR = calculatedVAR;
-                    else if ( calculatedVAR < lowestVAR ) {
+                    else if ( calculatedVAR <= lowestVAR ) {
                         lowestVAR = calculatedVAR;
                     }
 
@@ -138,7 +138,7 @@ public class NodeOne {
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
                         optimizedTotalPAR = addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo);
-                    } else if ( calculatedPAR < lowestPAR ) {
+                    } else if ( calculatedPAR <= lowestPAR ) {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
@@ -151,7 +151,7 @@ public class NodeOne {
                         optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwoVAR = Arrays.copyOf(tempFlexTwo,24);
                         optimizedTotalVAR = addThreeArray(inflexible,optimizedFlexOneVAR,optimizedFlexTwoVAR);
-                    } else if ( calculatedVAR < lowestVAR ) {
+                    } else if ( calculatedVAR <= lowestVAR ) {
                         lowestVAR = calculatedVAR;
                         optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwoVAR = Arrays.copyOf(tempFlexTwo,24);
@@ -363,7 +363,7 @@ public class NodeOne {
     	clientSocket = new Socket("127.0.0.1", portNum);
         
         inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        put=new PrintWriter(clientSocket.getOutputStream(),true);
+        //put=new PrintWriter(clientSocket.getOutputStream(),true);
     	}
     	catch(Exception e)
         {
@@ -376,43 +376,52 @@ public class NodeOne {
 
         if ( !data.equals("start_algorithm") ) {
 
-            //outToServer.writeBytes(data + '\n');
-    		put.println(data);
+            outToServer.writeBytes(data + '\n');
+    		//put.println(data);
 
             String inputString;
 
 
-            File f2 = new File(data);
-            FileOutputStream f2OutStream = new FileOutputStream(f2);
+            //File f2 = new File(data);
+            //FileOutputStream f2OutStream = new FileOutputStream(f2);
 
             serverTwo = new double[24];
             serverThree = new double[24];
 
             while ((inputString = inFromServer.readLine())!=null ) { // read in what is being returned from the server
             	
-            	String [] temp;
+            	//String [] temp;
 
-                byte inputByte[] = inputString.getBytes();
-                f2OutStream.write(inputByte);
-                f2OutStream.flush();
+                //byte inputByte[] = inputString.getBytes();
+                //f2OutStream.write(inputByte);
+                //f2OutStream.flush();
+            	
+            	System.out.println("Received by 1 inputstring :" + inputString);
 
-                temp = inputString.split(" ");
+                String [] temp = inputString.split(" ");
+                
+                System.out.println("Received by 1 temp :" + temp[1]);
+                System.out.println("Received by 1 temp :" + temp[2]);
+                System.out.println("Received by 1 temp :" + temp[3]);
+                
+                System.out.println("data :" + data);
+                
                 
                 if (data.equals("server_two_power.txt")){
-                  	 for( int j = 0 ; j < 24; j++) {
-                           serverTwo[j] = Double.parseDouble(temp[j]);
+                  	 for( int j = 1 ; j < temp.length; j++) {
+                           serverTwo[j-1] = Double.valueOf(temp[j]);
                   }
                    }
                   	 
                  if (data.equals("server_three_power.txt")){
-                     for( int j = 0 ; j < 24; j++) {
-                           serverThree[j] = Double.parseDouble(temp[j]);
+                     for( int j = 1 ; j < temp.length; j++) {
+                           serverThree[j-1] = Double.valueOf(temp[j]);
                      }
                  }
             }
             
 
-            f2OutStream.close();
+            //f2OutStream.close();
 
             clientSocket.close();
 

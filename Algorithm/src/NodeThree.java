@@ -109,14 +109,14 @@ public class NodeThree {
                     calculatedPAR = calculatePAR(tempArray);
                     if ( lowestPAR == 0.0 )
                         lowestPAR = calculatedPAR;
-                    else if ( calculatedPAR < lowestPAR ) {
+                    else if ( calculatedPAR <= lowestPAR ) {
                         lowestPAR = calculatedPAR;
                     }
 
                     calculatedVAR = calculateVAR(tempArray);
                     if ( lowestVAR == 0.0 )
                         lowestVAR = calculatedVAR;
-                    else if ( calculatedVAR < lowestVAR ) {
+                    else if ( calculatedVAR <= lowestVAR ) {
                         lowestVAR = calculatedVAR;
                     }
 
@@ -133,7 +133,7 @@ public class NodeThree {
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
                         optimizedTotalPAR = addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo);
-                    } else if ( calculatedPAR < lowestPAR ) {
+                    } else if ( calculatedPAR <= lowestPAR ) {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
@@ -146,7 +146,7 @@ public class NodeThree {
                         optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwoVAR = Arrays.copyOf(tempFlexTwo,24);
                         optimizedTotalVAR = addThreeArray(inflexible,optimizedFlexOneVAR,optimizedFlexTwoVAR);
-                    } else if ( calculatedVAR < lowestVAR ) {
+                    } else if ( calculatedVAR <= lowestVAR ) {
                         lowestVAR = calculatedVAR;
                         optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwoVAR = Arrays.copyOf(tempFlexTwo,24);
@@ -349,14 +349,14 @@ public class NodeThree {
 
         Socket clientSocket = null;
         BufferedReader inFromServer = null;
-        PrintWriter put=null;
+        //PrintWriter put=null;
 
         try
         {
             clientSocket = new Socket("127.0.0.1", portNum);
 
             inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            put=new PrintWriter(clientSocket.getOutputStream(),true);
+            //put=new PrintWriter(clientSocket.getOutputStream(),true);
         }
         catch(Exception e)
         {
@@ -368,15 +368,15 @@ public class NodeThree {
 
 
         if ( !data.equals("start_algorithm") ) {
-
-            //outToServer.writeBytes(data + '\n');
-            put.println(data);
+        	System.out.println("command received by 3:" + data);
+            outToServer.writeBytes(data + '\n');
+            //put.println(data);
 
             String inputString;
 
 
-            File f2 = new File(data);
-            FileOutputStream f2OutStream = new FileOutputStream(f2);
+            //File f2 = new File(data);
+           // FileOutputStream f2OutStream = new FileOutputStream(f2);
 
             serverOne = new double[24];
             serverTwo = new double[24];
@@ -385,26 +385,28 @@ public class NodeThree {
 
                 String [] temp;
 
-                byte inputByte[] = inputString.getBytes();
-                f2OutStream.write(inputByte);
-                f2OutStream.flush();
+                //byte inputByte[] = inputString.getBytes();
+                //f2OutStream.write(inputByte);
+               // f2OutStream.flush();
+                
+                System.out.println("Received by 3 inputstring :" + inputString);
 
                 temp = inputString.split(" ");
 
                 if (data.equals("server_one_power.txt")){
-                    for( int j = 0 ; j < 24; j++) {
-                        serverOne[j] = Double.parseDouble(temp[j]);
+                    for( int j = 1 ; j < 24; j++) {
+                        serverOne[j-1] = Double.valueOf(temp[j]);
                     }
                 }
 
                 if (data.equals("server_two_power.txt")){
-                    for( int j = 0 ; j < 24; j++) {
-                        serverTwo[j] = Double.parseDouble(temp[j]);
+                    for( int j = 1 ; j < 24; j++) {
+                        serverTwo[j-1] = Double.valueOf(temp[j]);
                     }
                 }
             }
 
-            f2OutStream.close();
+            //f2OutStream.close();
 
             clientSocket.close();
 
