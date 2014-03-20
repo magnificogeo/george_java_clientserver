@@ -16,8 +16,8 @@ public class NodeThree {
     static double[] tempFlexTwo;
     static double[] tempFlexOne;
 
-    static double[] serverOne;
-    static double[] serverTwo;
+    static double[] serverOne = new double[24];
+    static double[] serverTwo = new double[24];
 
     static double calculatedPAR = 0.0;
     static double lowestPAR = 0.0;
@@ -36,18 +36,18 @@ public class NodeThree {
     static int nodeOnePort = 11000;
 
     static int serverRunning = 0;
-    static int maxConnections = 1000;
+    static int maxConnections = 3;
 
     public static void main(String[] args) {
-        if ( serverRunning == 0 ) {
+
             try {
                 startServer();
                 System.out.println("Server started successfully");
-                serverRunning = 1;
+                //serverRunning = 1;
             } catch ( Exception e ) {
                 System.out.println("Unable to start server process. Process may be used!");
             }
-        }
+
     }
 
     /**
@@ -76,15 +76,16 @@ public class NodeThree {
         tempFlexOne = Arrays.copyOf(flexibleOne,24);
 
         try {
-            sendData(nodeTwoPort,"server_two_power.txt");
+            NodeThree.sendData(NodeThree.nodeTwoPort, "server_two_power");
         } catch ( Exception e ) {
             System.out.println("power profile request from node 2 failed!");
         }
 
         try {
-            sendData(nodeOnePort,"server_one_power.txt");
+            NodeThree.sendData(NodeThree.nodeOnePort, "server_one_power");
         } catch ( Exception e ) {
             System.out.println("power profile request from node 1 failed!");
+            e.printStackTrace(System.out);
         }
 
         inflexible = addThreeArray(inflexible,serverTwo,serverOne);
@@ -332,7 +333,7 @@ public class NodeThree {
 
             while ((i++ < maxConnections || maxConnections == 0)) {
 
-                System.out.println("I IS :" + i);
+                System.out.println("Cycle number :" + i);
 
                 Socket connectionSocket = welcomeSocket.accept();
                 multiThreadedComms connection = new multiThreadedComms(connectionSocket,3);
@@ -345,68 +346,41 @@ public class NodeThree {
         }
     }
 
-    private static void sendData(int portNum, String data) throws Exception {
+    public static void sendData(int portNum, String data) throws Exception {
 
         Socket clientSocket = null;
         BufferedReader inFromServer = null;
-        //PrintWriter put=null;
 
-        try
-        {
-            clientSocket = new Socket("127.0.0.1", portNum);
-
-            inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-            //put=new PrintWriter(clientSocket.getOutputStream(),true);
-        }
-        catch(Exception e)
-        {
-            System.out.println("ERROR");
-        }
+        clientSocket = new Socket("127.0.0.1", portNum);
+        inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
         DataOutputStream outToServer = new DataOutputStream(
                 clientSocket.getOutputStream());
 
 
         if ( !data.equals("start_algorithm") ) {
-        	System.out.println("command received by 3:" + data);
             outToServer.writeBytes(data + '\n');
-            //put.println(data);
 
             String inputString;
-
-
-            //File f2 = new File(data);
-           // FileOutputStream f2OutStream = new FileOutputStream(f2);
-
-            serverOne = new double[24];
-            serverTwo = new double[24];
 
             while ((inputString = inFromServer.readLine())!=null ) { // read in what is being returned from the server
 
                 String [] temp;
 
-                //byte inputByte[] = inputString.getBytes();
-                //f2OutStream.write(inputByte);
-               // f2OutStream.flush();
-                
-                System.out.println("Received by 3 inputstring :" + inputString);
-
                 temp = inputString.split(" ");
 
-                if (data.equals("server_one_power.txt")){
+                if (data.equals("server_one_power")){
                     for( int j = 1 ; j < 24; j++) {
                         serverOne[j-1] = Double.valueOf(temp[j]);
                     }
                 }
 
-                if (data.equals("server_two_power.txt")){
+                if (data.equals("server_two_power")){
                     for( int j = 1 ; j < 24; j++) {
                         serverTwo[j-1] = Double.valueOf(temp[j]);
                     }
                 }
             }
-
-            //f2OutStream.close();
 
             clientSocket.close();
 
@@ -425,24 +399,20 @@ public class NodeThree {
     		temp[i] = String.valueOf(array[i]);
     	}
     	
-    	 try{  
-	           FileWriter fr = new FileWriter("server_three_power.txt");  
-	           BufferedWriter br = new BufferedWriter(fr);  
-	           PrintWriter out = new PrintWriter(br);  
-	           for(int i=0; i<temp.length; i++){  
-	               if(temp[i] != null)  
-	                     
-	             out.write(temp[i] + " ");  
-
-	           }  
-	           out.close();  
-	             
-	             
-	       }  
+        try {
+           FileWriter fr = new FileWriter("server_three_power_profile.txt");
+           BufferedWriter br = new BufferedWriter(fr);
+           PrintWriter out = new PrintWriter(br);
+           for(int i=0; i<temp.length; i++){
+               if(temp[i] != null)
+                   out.write(temp[i] + " ");
+           }
+           out.close();
+        }
 	         
-	       catch(IOException e){  
-	        System.out.println(e);     
-	       }  
+        catch(IOException e){
+            System.out.println(e);
+        }
     }
     
     

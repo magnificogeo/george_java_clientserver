@@ -16,8 +16,8 @@ public class NodeOne {
     static double[] tempFlexTwo;
     static double[] tempFlexOne;
 
-    static double[] serverTwo;
-    static double[] serverThree;
+    static double[] serverTwo = new double[24];
+    static double[] serverThree = new double[24];
 
     static double calculatedPAR = 0.0;
     static double lowestPAR = 0.0;
@@ -32,25 +32,27 @@ public class NodeOne {
     static double[] optimizedTotalPAR = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // array to store the optimized power profile for lowest PAR
     static double[] optimizedTotalVAR = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // array to store the optimized power profile for the lowest VAR
 
-
+    static int nodeOnePort = 11000;
     static int nodeTwoPort = 12000;
     static int nodeThreePort = 13000;
 
     static int serverRunning = 0;
-    static int maxConnections = 1000;
+    static int maxConnections = 3;
 
     public static void main(String[] args) {
 
-        if ( serverRunning == 0 ) {
+        //for (String s: args) {
+          //  if (s.equals("start")) {
             try {
                 startServer();
                 System.out.println("Server started successfully");
-                serverRunning = 1;
-
+                //serverRunning = 1;
             } catch ( Exception e ) {
                 System.out.println("Unable to start server process. Process may be used!");
             }
-        }
+            //}
+        //}
+
     }
 
     /**
@@ -78,15 +80,14 @@ public class NodeOne {
         tempFlexTwo = Arrays.copyOf(flexibleTwo,24);
         tempFlexOne = Arrays.copyOf(flexibleOne,24);
 
-
         try {
-            sendData(nodeTwoPort,"server_two_power.txt");
+            NodeOne.sendData(NodeOne.nodeTwoPort,"server_two_power");
         } catch ( Exception e ) {
             System.out.println("power profile request from node 2 failed!");
         }
-        
+
         try {
-            sendData(nodeThreePort,"server_three_power.txt");
+            NodeOne.sendData(NodeOne.nodeThreePort,"server_three_power");
         } catch ( Exception e ) {
             System.out.println("power profile request from node 3 failed!");
         }
@@ -332,14 +333,20 @@ public class NodeOne {
      * @throws Exception
      */
     private static void startServer() throws Exception {
-        algorithmStart();
+
+        if ( serverRunning == 0 ) {
+            algorithmStart();
+            serverRunning = 1;
+        }
+
+
         int i = 0;
         try {
             ServerSocket welcomeSocket = new ServerSocket(11000);
 
             while ((i++ < maxConnections || maxConnections == 0)) {
 
-                System.out.println("I IS :" + i);
+                System.out.println("Cycle number` :" + i);
 
                 Socket connectionSocket = welcomeSocket.accept();
                 multiThreadedComms connection = new multiThreadedComms(connectionSocket,1);
@@ -352,24 +359,14 @@ public class NodeOne {
         }
     }
 
-    private static void sendData(int portNum, String data) throws Exception {
+    public static void sendData(int portNum, String data) throws Exception {
         
     	Socket clientSocket = null;
     	BufferedReader inFromServer = null;
-    	PrintWriter put=null;
-    	
-    	try
-    	{
-    	clientSocket = new Socket("127.0.0.1", portNum);
-        
+
+        clientSocket = new Socket("127.0.0.1", portNum);
         inFromServer = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-        //put=new PrintWriter(clientSocket.getOutputStream(),true);
-    	}
-    	catch(Exception e)
-        {
-    		System.out.println("ERROR");
-        }
-    	
+
     	DataOutputStream outToServer = new DataOutputStream(
                 clientSocket.getOutputStream());
 
@@ -377,54 +374,27 @@ public class NodeOne {
         if ( !data.equals("start_algorithm") ) {
 
             outToServer.writeBytes(data + '\n');
-    		//put.println(data);
 
             String inputString;
 
-
-            //File f2 = new File(data);
-            //FileOutputStream f2OutStream = new FileOutputStream(f2);
-
-            serverTwo = new double[24];
-            serverThree = new double[24];
-
             while ((inputString = inFromServer.readLine())!=null ) { // read in what is being returned from the server
-            	
-            	//String [] temp;
-
-                //byte inputByte[] = inputString.getBytes();
-                //f2OutStream.write(inputByte);
-                //f2OutStream.flush();
-            	
-            	System.out.println("Received by 1 inputstring :" + inputString);
 
                 String [] temp = inputString.split(" ");
                 
-                System.out.println("Received by 1 temp :" + temp[1]);
-                System.out.println("Received by 1 temp :" + temp[2]);
-                System.out.println("Received by 1 temp :" + temp[3]);
-                
-                System.out.println("data :" + data);
-                
-                
-                if (data.equals("server_two_power.txt")){
+                if (data.equals("server_two_power")){
                   	 for( int j = 1 ; j < temp.length; j++) {
                            serverTwo[j-1] = Double.valueOf(temp[j]);
-                  }
-                   }
+                     }
+                }
                   	 
-                 if (data.equals("server_three_power.txt")){
+                 if (data.equals("server_three_power")){
                      for( int j = 1 ; j < temp.length; j++) {
                            serverThree[j-1] = Double.valueOf(temp[j]);
                      }
                  }
             }
-            
-
-            //f2OutStream.close();
 
             clientSocket.close();
-
 
         } else {
             outToServer.writeBytes(data + '\n');
@@ -441,24 +411,22 @@ public class NodeOne {
     		temp[i] = String.valueOf(array[i]);
     	}
     	
-    	 try{  
-	           FileWriter fr = new FileWriter("server_one_power.txt");  
-	           BufferedWriter br = new BufferedWriter(fr);  
-	           PrintWriter out = new PrintWriter(br);  
-	           for(int i=0; i<temp.length; i++){  
-	               if(temp[i] != null)  
-	                     
-	             out.write(temp[i] + " ");  
-	                 //out.write("\n");         
-	           }  
-	           out.close();  
-	             
-	             
-	       }  
+        try {
+           FileWriter fr = new FileWriter("server_one_power_profile.txt");
+           BufferedWriter br = new BufferedWriter(fr);
+           PrintWriter out = new PrintWriter(br);
+           for(int i=0; i<temp.length; i++){
+               if(temp[i] != null)
+                    out.write(temp[i] + " ");
+           }
+           out.close();
+
+
+        }
 	         
-	       catch(IOException e){  
-	        System.out.println(e);     
-	       }  
+        catch(IOException e){
+            System.out.println(e);
+        }
     }
     
     
