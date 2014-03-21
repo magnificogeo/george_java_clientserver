@@ -3,7 +3,7 @@ import java.net.*;
 
 /**
  * This class implements Runnable. Runnable objects are code to be executed within a thread in a process.
- * Constructor takes in
+ * Constructor takes in server object and the nodeNum which instantiates this object.
  */
 public class multiThreadedComms implements Runnable {
 
@@ -33,17 +33,22 @@ public class multiThreadedComms implements Runnable {
             if ( clientSentence.equals("start_algorithm")) {
                 if ( nodeNum == 1 )
 
-                        NodeOne.algorithmStart();
+                        NodeOne.algorithmStart(); // start algorithm in node one
 
                 if ( nodeNum == 2 )
 
-                        NodeTwo.algorithmStart();
+                        NodeTwo.algorithmStart(); // start algorithm in node two
 
                 if ( nodeNum == 3 )
 
-                        NodeThree.algorithmStart();
+                        NodeThree.algorithmStart(); // start algorithm in node three
 
             } else {
+
+                /**
+                 * This snippet here sends an array to the client 
+                 */
+
 
                     	if(clientSentence.equals("server_one_power")){
                     		String resultOne = "";

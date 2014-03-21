@@ -7,24 +7,42 @@ import java.util.logging.Logger;
  */
 public class NodeOne {
 
+    /**
+     *  Arrays used to store power profiles for inflexible and flexible appliances.
+     */
     static double[] inflexible;
     static double[] flexibleOne;
     static double[] flexibleTwo;
     static double[] flexibleThree;
 
+    /**
+     * Temporary arrays used in optimization operations.
+     */
     static double[] tempArray;
     static double[] tempFlexTwo;
     static double[] tempFlexOne;
 
+    /**
+     * Array definitions to store the requested power profiles from other two nodes before starting optimization.
+     */
     static double[] serverTwo = new double[24];
     static double[] serverThree = new double[24];
 
+    /**
+     *  Variables to store calculated Peak-to-Average Ratio.
+     */
     static double calculatedPAR = 0.0;
     static double lowestPAR = 0.0;
 
+    /**
+     * Variables to store calculated variance.
+     */
     static double calculatedVAR = 0.0;
     static double lowestVAR = 0.0;
 
+    /**
+     * Array definitions to store optimized power profiles.
+     */
     static double[] optimizedFlexTwo; // array to store the optimized power profile for flexible appliance 2 for lowest PAR
     static double[] optimizedFlexOne; // array to store the optimized power profile for flexible appliance 1 for lowest PAR
     static double[] optimizedFlexOneVAR; // array to store the optimized power profile for flexible appliance 1 for lowest VAR
@@ -32,25 +50,25 @@ public class NodeOne {
     static double[] optimizedTotalPAR = {2.01,1.76,1.76,1.76,1.76,1.76,3.26,4.81,0.56,0.26,0.16,0.16,0.16,0.16,1.96,1.96,0.16,1.76,4.0600000000000005,2.56,2.71,2.71,4.3100000000000005,4.81}; // array to store the optimized power profile for lowest PAR
     static double[] optimizedTotalVAR = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // array to store the optimized power profile for the lowest VAR
 
+    /**
+     * Definition of port numbers for other two nodes.
+     */
     static int nodeTwoPort = 12000;
     static int nodeThreePort = 13000;
 
+    /**
+     * Flags used to control the flow and start-stop of servers.
+     */
     static int serverRunning = 0;
-    static int maxConnections = 99;
+    static int maxConnections = 99; // Max number of server sockets opened on the same port.
 
     public static void main(String[] args) {
-
-        //for (String s: args) {
-          //  if (s.equals("start")) {
-            try {
-                startServer();
-                System.out.println("Server started successfully");
-                //serverRunning = 1;
-            } catch ( Exception e ) {
-                System.out.println("Unable to start server process. Process may be used!");
-            }
-            //}
-        //}
+        try {
+            startServer();
+            System.out.println("Server started successfully");
+        } catch ( Exception e ) {
+            System.out.println("Unable to start server process. Process may be used!");
+        }
     }
 
     /**
@@ -323,7 +341,7 @@ public class NodeOne {
     }
 
     /**
-     * This function starts the server running.
+     * This function starts the server running and spins up a thread to handle multiple connections.
      * @throws Exception
      */
     private static void startServer() throws Exception {
@@ -353,6 +371,12 @@ public class NodeOne {
         }
     }
 
+    /**
+     * This function initializes the client-side of the server for sending data/commands and request for data from other servers.
+     * @param portNum
+     * @param data
+     * @throws Exception
+     */
     public static void sendData(int portNum, String data) throws Exception {
         
     	Socket clientSocket = null;
@@ -395,9 +419,11 @@ public class NodeOne {
             clientSocket.close();
         }
     }
-    
-    
-    
+
+    /**
+     * This function takes in an array and write it's content into a text file.
+     * @param array
+     */
     private static void arrayToFile(double array[]){
     	String[] temp = new String[array.length];
     	
@@ -420,11 +446,6 @@ public class NodeOne {
             System.out.println(e);
         }
     }
-    
-    
-    
-    
-    
 }
 
 
