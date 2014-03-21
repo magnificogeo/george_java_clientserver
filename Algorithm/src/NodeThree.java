@@ -47,7 +47,7 @@ public class NodeThree {
     static double[] optimizedFlexOne; // array to store the optimized power profile for flexible appliance 1 for lowest PAR
     static double[] optimizedFlexOneVAR; // array to store the optimized power profile for flexible appliance 1 for lowest VAR
     static double[] optimizedFlexTwoVAR; // array to store the optimized power profile for flexible appliance 2 for lowest VAR
-    static double[] optimizedTotalPAR = {2.01,1.76,1.76,1.76,1.76,1.76,3.26,4.81,0.56,0.26,0.16,0.16,0.16,0.16,1.96,1.96,0.16,1.76,4.0600000000000005,2.56,2.71,2.71,4.3100000000000005,4.81}; // array to store the optimized power profile for lowest PAR
+    static double[] optimizedTotalPAR = {2.01,1.76,1.76,1.76,1.76,1.76,3.26,4.81,2.36,2.06,0.16,0.16,0.16,0.16,0.16,0.16,0.16,3.76,4.06,2.56,2.71,2.71,2.31,4.81}; // array to store the optimized power profile for lowest PAR
     static double[] optimizedTotalVAR = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // aray to store the optimized power profile for the lowest VAR
 
     /**

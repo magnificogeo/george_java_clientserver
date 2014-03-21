@@ -46,7 +46,7 @@ public class multiThreadedComms implements Runnable {
             } else {
 
                 /**
-                 * This snippet here sends an array to the client 
+                 * This snippet here sends an array to the client
                  */
 
 
