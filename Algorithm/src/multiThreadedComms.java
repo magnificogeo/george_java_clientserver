@@ -27,7 +27,7 @@ public class multiThreadedComms implements Runnable {
         	
             clientSentence = inFromClient.readLine();
 
-            System.out.println("FROM CLIENT: " + clientSentence);
+            System.out.println("Node " + nodeNum +  " server received:" + clientSentence);
 
             // Upon receiving the start_algorithm command, the thread calls the algorithmStart() method in the respective object
             if ( clientSentence.equals("start_algorithm")) {
@@ -72,7 +72,6 @@ public class multiThreadedComms implements Runnable {
                     		outToClient.writeBytes(resultThree);
                     	}
                     	server.close();
-                    	
 
             }
 

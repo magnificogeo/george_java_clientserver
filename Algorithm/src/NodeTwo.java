@@ -29,14 +29,14 @@ public class NodeTwo {
     static double[] optimizedFlexOne; // array to store the optimized power profile for flexible appliance 1 for lowest PAR
     static double[] optimizedFlexOneVAR; // array to store the optimized power profile for flexible appliance 1 for lowest VAR
     static double[] optimizedFlexThreeVAR; // array to store the optimized power profile for flexible appliance 3 for lowest VAR
-    static double[] optimizedTotalPAR = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // array to store the optimized power profile for lowest PAR
+    static double[] optimizedTotalPAR = {2.01,1.76,1.76,1.76,3.76,3.76,3.26,4.81,0.56,0.26,0.16,0.16,0.16,0.16,0.16,0.16,0.16,1.76,4.0600000000000005,2.56,2.71,2.71,4.3100000000000005,4.81}; // array to store the optimized power profile for lowest PAR
     static double[] optimizedTotalVAR = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0}; // aray to store the optimized power profile for the lowest VAR
 
     static int nodeOnePort = 11000;
     static int nodeThreePort = 13000;
 
     static int serverRunning = 0;
-    static int maxConnections = 3;
+    static int maxConnections = 100;
 
     public static void main(String[] args) {
 
@@ -97,14 +97,14 @@ public class NodeTwo {
          */
         long startTime = System.currentTimeMillis();
         // Right shifting through 8 combinations of flexibleOne
-        for(int i = 0; i < flexOneShift; i++) {
+        for(int i = 0; i <= flexOneShift; i++) {
             if ( i == 0 ) {
                 // do nothing
             } else {
                 tempFlexOne = rightShiftArray(tempFlexOne);
             }
             // Right shifting through 7 combinations of flexibleTwo
-            for(int j = 0; j < flexThreeShift; j++) {
+            for(int j = 0; j <= flexThreeShift; j++) {
                 if ( j == 0 ) {
 
                     tempArray = addThreeArray(inflexible,tempFlexOne,tempFlexThree);
@@ -169,9 +169,6 @@ public class NodeTwo {
         System.out.println("Lowest VAR " + lowestVAR);
 
         System.out.println("Execution time: " + (endTime - startTime) + "ms");
-
-        // TODO: Write to file
-        // TODO: Detect terminating condition
 
         try {
             sendData(nodeThreePort,"start_algorithm");
@@ -335,7 +332,7 @@ public class NodeTwo {
 
             while ((i++ < maxConnections || maxConnections == 0)) {
 
-                System.out.println("Cycle number :" + i);
+                System.out.println("Instance :" + i);
 
                 Socket connectionSocket = welcomeSocket.accept();
                 multiThreadedComms connection = new multiThreadedComms(connectionSocket,2);
