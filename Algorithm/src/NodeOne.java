@@ -60,7 +60,7 @@ public class NodeOne {
      * Flags used to control the flow and start-stop of servers.
      */
     static int serverRunning = 0;
-    static int maxConnections = 99; // Max number of server sockets opened on the same port.
+    static int maxConnections = 4; // Max number of server sockets opened on the same port.
 
     public static void main(String[] args) {
         try {
@@ -108,7 +108,7 @@ public class NodeOne {
             System.out.println("power profile request from node 3 failed!");
         }
 
-        inflexible = addThreeArray(inflexible,serverTwo,serverThree);
+        inflexible = Arrays.copyOf(addThreeArray(inflexible,serverTwo,serverThree),24);
 
         /**
          * This loop finds the lowest PAR between inflexible, flexibleOne and flexibleTwo
@@ -119,13 +119,13 @@ public class NodeOne {
             if ( i == 0 ) {
                 // do nothing
             } else {
-                tempFlexOne = rightShiftArray(tempFlexOne);
+                tempFlexOne = Arrays.copyOf(rightShiftArray(tempFlexOne),24);
             }
             // Right shifting through 7 combinations of flexibleTwo
             for(int j = 0; j <= flexTwoShift; j++) {
                 if ( j == 0 ) {
                     // for zero-th iteration we do not need to shift any thing and compare them
-                    tempArray = addThreeArray(inflexible,tempFlexOne,tempFlexTwo);
+                    tempArray = Arrays.copyOf(addThreeArray(inflexible,tempFlexOne,tempFlexTwo),24);
 
                     calculatedPAR = calculatePAR(tempArray);
                     if ( lowestPAR == 0.0 )
@@ -146,20 +146,20 @@ public class NodeOne {
                     System.out.println("VAR :" + calculatedVAR);
 
                 } else {
-                    tempFlexTwo = rightShiftArray(tempFlexTwo);
-                    tempArray = addThreeArray(inflexible, tempFlexOne, tempFlexTwo); //
+                    tempFlexTwo = Arrays.copyOf(rightShiftArray(tempFlexTwo),24);
+                    tempArray = Arrays.copyOf(addThreeArray(inflexible, tempFlexOne, tempFlexTwo),24); //
 
                     calculatedPAR = calculatePAR(tempArray);
                     if ( lowestPAR == 0.0 ) {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
-                        optimizedTotalPAR = addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo);
+                        optimizedTotalPAR = Arrays.copyOf(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo),24);
                     } else if ( calculatedPAR <= lowestPAR ) {
                         lowestPAR = calculatedPAR;
                         optimizedFlexOne = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwo = Arrays.copyOf(tempFlexTwo,24);
-                        optimizedTotalPAR = addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo);
+                        optimizedTotalPAR = Arrays.copyOf(addThreeArray(inflexible,optimizedFlexOne,optimizedFlexTwo),24);
                     }
 
                     calculatedVAR = calculateVAR(tempArray);
@@ -167,12 +167,12 @@ public class NodeOne {
                         lowestVAR = calculatedVAR;
                         optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwoVAR = Arrays.copyOf(tempFlexTwo,24);
-                        optimizedTotalVAR = addThreeArray(inflexible,optimizedFlexOneVAR,optimizedFlexTwoVAR);
+                        optimizedTotalVAR = Arrays.copyOf(addThreeArray(inflexible,optimizedFlexOneVAR,optimizedFlexTwoVAR),24);
                     } else if ( calculatedVAR <= lowestVAR ) {
                         lowestVAR = calculatedVAR;
                         optimizedFlexOneVAR = Arrays.copyOf(tempFlexOne,24);
                         optimizedFlexTwoVAR = Arrays.copyOf(tempFlexTwo,24);
-                        optimizedTotalVAR = addThreeArray(inflexible,optimizedFlexOneVAR,optimizedFlexTwoVAR);
+                        optimizedTotalVAR = Arrays.copyOf(addThreeArray(inflexible,optimizedFlexOneVAR,optimizedFlexTwoVAR),24);
                     }
 
                     System.out.println("PAR :" + calculatedPAR);
@@ -194,6 +194,13 @@ public class NodeOne {
         } catch ( Exception e ) {
             System.out.println("Send data failed!");
         }
+
+        arrayToFile(optimizedTotalPAR,"ONE_optimizedTotalPAR.txt"); // Power profile that has the lowest PAR
+        arrayToFile(optimizedTotalVAR,"ONE_optimizedTotalVAR.txt"); // Power profile that has the lowest VAR
+        arrayToFile(optimizedFlexOne,"ONE_optimizedFlexOne.txt"); // Power profile for flexible app 1 for minimum PAR
+        arrayToFile(optimizedFlexTwo,"ONE_optimizedFlexTwo.txt"); // Power profile for flexible app 2 for minimum PAR
+        arrayToFile(optimizedFlexOneVAR,"ONE_optimizedFlexOneVAR.txt"); // Power profile for flexible app 1 for minimum VAR
+        arrayToFile(optimizedFlexTwoVAR,"ONE_optimizedFlexTwoVAR.txt"); // Power profile for flexible app 2 for minimum VAR
     }
 
     /**
@@ -423,8 +430,9 @@ public class NodeOne {
     /**
      * This function takes in an array and write it's content into a text file.
      * @param array
+     * @param filename
      */
-    private static void arrayToFile(double array[]){
+    private static void arrayToFile(double array[], String filename){
     	String[] temp = new String[array.length];
     	
     	for (int i=0; i<array.length; i++){
@@ -432,7 +440,7 @@ public class NodeOne {
     	}
     	
         try {
-           FileWriter fr = new FileWriter("server_one_power_profile.txt");
+           FileWriter fr = new FileWriter(filename);
            BufferedWriter br = new BufferedWriter(fr);
            PrintWriter out = new PrintWriter(br);
            for(int i=0; i<temp.length; i++){
