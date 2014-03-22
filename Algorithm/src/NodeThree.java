@@ -60,18 +60,21 @@ public class NodeThree {
      * Flags used to control the flow and start-stop of servers.
      */
     static int serverRunning = 0;
-    static int maxConnections = 5;
+    static int maxConnections = 10;
+    static int i = 0;
+    static int timesRan = 0;
 
     public static void main(String[] args) {
 
             try {
+                double[] tempArray = fileToArray("serverThree_profile_default.txt");
+                arrayToFile(tempArray,"serverThree_profile.txt");
                 startServer();
                 System.out.println("Server started successfully");
                 //serverRunning = 1;
             } catch ( Exception e ) {
                 System.out.println("Unable to start server process. Process may be used!");
             }
-
     }
 
     /**
@@ -101,16 +104,29 @@ public class NodeThree {
 
         try {
             NodeThree.sendData(NodeThree.nodeTwoPort, "server_two_power");
+
         } catch ( Exception e ) {
-            System.out.println("power profile request from node 2 failed!");
+            System.out.println("power profile request from node 2 failed! Reverting to back-up power profile for calculations.");
+            try {
+                serverTwo = fileToArray("serverTwo_profile_default.txt");
+            } catch ( Exception f ) {
+                System.out.println("There is a problem reading the back up power profiles!");
+            }
         }
+
 
         try {
             NodeThree.sendData(NodeThree.nodeOnePort, "server_one_power");
+
         } catch ( Exception e ) {
-            System.out.println("power profile request from node 1 failed!");
-            e.printStackTrace(System.out);
+            System.out.println("power profile request from node 1 failed! Reverting to back-up power profile for calculations.");
+            try {
+                serverOne = fileToArray("serverOne_profile_default.txt");
+            } catch ( Exception f ) {
+                System.out.println("There is a problem reading the back up power profiles!");
+            }
         }
+
 
         inflexible = Arrays.copyOf(addThreeArray(inflexible, serverTwo, serverOne), 24);
 
@@ -187,6 +203,8 @@ public class NodeThree {
         }
         long endTime = System.currentTimeMillis();
 
+        ++timesRan; // increment the timesRan counter after executing a loop
+
         System.out.println("Lowest PAR " + lowestPAR);
         System.out.println("Lowest VAR " + lowestVAR);
 
@@ -198,12 +216,12 @@ public class NodeThree {
             System.out.println("Send data");
         }
 
-        arrayToFile(optimizedTotalPAR,"THREE_optimizedTotalPAR.txt"); // Power profile that has the lowest PAR
-        arrayToFile(optimizedTotalVAR,"THREE_optimizedTotalVAR.txt"); // Power profile that has the lowest VAR
-        arrayToFile(optimizedFlexOne,"THREE_optimizedFlexOne.txt"); // Power profile for flexible app 1 for minimum PAR
-        arrayToFile(optimizedFlexTwo,"THREE_optimizedFlexTwo.txt"); // Power profile for flexible app 2 for minimum PAR
-        arrayToFile(optimizedFlexOneVAR,"THREE_optimizedFlexOneVAR.txt"); // Power profile for flexible app 1 for minimum VAR
-        arrayToFile(optimizedFlexTwoVAR,"THREE_optimizedFlexTwoVAR.txt"); // Power profile for flexible app 2 for minimum VAR
+        arrayToFile(optimizedTotalPAR,"serverThree_profile.txt"); // Power profile that has the lowest PAR
+        arrayToFile(optimizedTotalVAR,"THREE_optimized_for_VAR_profile.txt"); // Power profile that has the lowest VAR
+        arrayToFile(optimizedFlexOne,"THREE_optimized_FlexOne_profile.txt"); // Power profile for flexible app 1 for minimum PAR
+        arrayToFile(optimizedFlexTwo,"THREE_optimized_FlexTwo_profile.txt"); // Power profile for flexible app 2 for minimum PAR
+        arrayToFile(optimizedFlexOneVAR,"THREE_optimized_FlexOne_profile_for_VAR.txt"); // Power profile for flexible app 1 for minimum VAR
+        arrayToFile(optimizedFlexTwoVAR,"THREE_optimized_FlexTwo_profile_For_VAR.txt"); // Power profile for flexible app 2 for minimum VAR
     }
 
     /**
@@ -355,7 +373,6 @@ public class NodeThree {
      * @throws Exception
      */
     private static void startServer() throws Exception {
-        int i = 0;
         try {
             ServerSocket welcomeSocket = new ServerSocket(13000);
 
@@ -431,11 +448,11 @@ public class NodeThree {
      */
     private static void arrayToFile(double array[], String filename){
     	String[] temp = new String[array.length];
-    	
+
     	for (int i=0; i<array.length; i++){
     		temp[i] = String.valueOf(array[i]);
     	}
-    	
+
         try {
            FileWriter fr = new FileWriter(filename);
            BufferedWriter br = new BufferedWriter(fr);
@@ -446,15 +463,88 @@ public class NodeThree {
            }
            out.close();
         }
-	         
+
         catch(IOException e){
             System.out.println(e);
         }
     }
-    
-    
-    
 
+    /**
+     * This function exits the terminates the execution and exits the program.
+     */
+    public static void exit() {
+        System.exit(0);
+    }
+
+    /**
+     * This function checks for terminating condition
+     * @param inArray
+     */
+    /*public static boolean isTerminate(double[] inArray) {
+
+        double[] tempArray;
+        tempArray = fileToArray();
+
+        for(int i = 0; i < inArray.length; i++) {
+            if ( tempArray[i] != inArray[i] ) {
+                return false;
+            }
+        }
+
+        return true;
+    }*/
+
+    /**
+     * This function takes in filename of the txt file to be read and returns an array.
+     * @param fileToBeRead
+     * @return array
+     * @throws NumberFormatException
+     * @throws IOException
+     */
+    public static double[] fileToArray(String fileToBeRead){
+
+        double[] arr = new double[24];
+
+
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(fileToBeRead));
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            System.out.print("ERROR 1");
+        }
+
+        String line;
+        String [] temp;
+
+        try {
+            while ((line = br.readLine())!= null){
+
+                temp = line.split(" "); //split spaces
+
+                for (int j = 0; j<temp.length; j++) {
+                    arr[j] = Double.valueOf(temp[j]);
+                }
+
+            }
+        } catch (NumberFormatException e) {
+            // TODO Auto-generated catch block
+            System.out.print("ERROR 2");
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.print("ERROR 3");
+        }
+
+        try {
+            br.close();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            System.out.print("ERROR 4");
+        }
+
+        return arr;
+
+    }
 }
-	
+
 

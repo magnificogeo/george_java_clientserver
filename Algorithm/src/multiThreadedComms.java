@@ -44,38 +44,49 @@ public class multiThreadedComms implements Runnable {
                         NodeThree.algorithmStart(); // start algorithm in node three
 
             } else {
+                        /**
+                         * This snippet here sends an array to the client
+                         */
 
-                /**
-                 * This snippet here sends an array to the client
-                 */
+                        if(clientSentence.equals("server_one_power")){
+                            String resultOne = "";
+                            double[] tempArray = NodeOne.fileToArray("serverOne_profile.txt");
+
+                            for (int i=0; i<tempArray.length; i++){
+                                String string = String.valueOf(tempArray[i]);
+                                resultOne = resultOne + " " + string;
+                            }
+                            outToClient.writeBytes(resultOne);
+                        }
+
+                        if(clientSentence.equals("server_two_power")){
+                            String resultTwo = "";
+                            double[] tempArray = NodeTwo.fileToArray("serverTwo_profile.txt");
+
+                            for (int i=0; i<tempArray.length; i++){
+                                String string = String.valueOf(tempArray[i]);
+                                resultTwo = resultTwo + " " + string;
+                            };
+                            outToClient.writeBytes(resultTwo);
+                        }
+
+                        if(clientSentence.equals("server_three_power")){
+                            String resultThree = "";
+                            double[] tempArray = NodeThree.fileToArray("serverThree_profile.txt");
+                            for (int i=0; i<tempArray.length; i++){
+                                String string = String.valueOf(tempArray[i]);
+                                resultThree = resultThree + " " + string;
+                            }
+                            outToClient.writeBytes(resultThree);
+                        }
+
+                        if(clientSentence.equals("stop_algorithm_all")) {
+                            NodeOne.exit();
+                            NodeTwo.exit();
+                            NodeThree.exit();
+                        }
 
 
-                    	if(clientSentence.equals("server_one_power")){
-                    		String resultOne = "";
-                    		for (int i=0; i<NodeOne.optimizedTotalPAR.length; i++){
-                    			String string = String.valueOf(NodeOne.optimizedTotalPAR[i]);
-                    			resultOne = resultOne + " " + string;
-                    		}
-                    		outToClient.writeBytes(resultOne);
-                    	}
-                    	
-                    	if(clientSentence.equals("server_two_power")){
-                    		String resultTwo = "";
-                    		for (int i=0; i<NodeTwo.optimizedTotalPAR.length; i++){
-                    			String string = String.valueOf(NodeTwo.optimizedTotalPAR[i]);
-                    			resultTwo = resultTwo + " " + string;
-                    		};
-                    		outToClient.writeBytes(resultTwo);
-                    	}
-                    	
-                    	if(clientSentence.equals("server_three_power")){
-                    		String resultThree = "";
-                    		for (int i=0; i<NodeThree.optimizedTotalPAR.length; i++){
-                    			String string = String.valueOf(NodeThree.optimizedTotalPAR[i]);
-                    			resultThree = resultThree + " " + string;
-                    		}
-                    		outToClient.writeBytes(resultThree);
-                    	}
                     	server.close();
 
             }
