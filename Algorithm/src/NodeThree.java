@@ -60,9 +60,10 @@ public class NodeThree {
      * Flags used to control the flow and start-stop of servers.
      */
     static int serverRunning = 0;
-    static int maxConnections = 10;
+    static int maxConnections = 100;
     static int i = 0;
     static int timesRan = 0;
+    static int terminateCounter = 0;
 
     public static void main(String[] args) {
 
@@ -214,6 +215,19 @@ public class NodeThree {
             sendData(nodeOnePort,"start_algorithm");
         } catch ( Exception e ) {
             System.out.println("Send data");
+        }
+
+        if ((isTerminate( optimizedTotalPAR, "serverThree_profile.txt" ))) {
+            terminateCounter++;
+        }
+        if ((isTerminate( optimizedTotalPAR, "serverThree_profile.txt" )) && (terminateCounter == 10)) {
+            try {
+                sendData(nodeOnePort,"stop_algorithm_all");
+                sendData(nodeTwoPort,"stop_algorithm_all");
+                System.out.println("terminating condition reached");
+            } catch ( Exception e ) {
+                System.out.println("Send data failed!");
+            }
         }
 
         arrayToFile(optimizedTotalPAR,"serverThree_profile.txt"); // Power profile that has the lowest PAR
@@ -479,11 +493,12 @@ public class NodeThree {
     /**
      * This function checks for terminating condition
      * @param inArray
+     * @param readFromFile
      */
-    /*public static boolean isTerminate(double[] inArray) {
+    public static boolean isTerminate(double[] inArray, String readFromFile) {
 
         double[] tempArray;
-        tempArray = fileToArray();
+        tempArray = fileToArray(readFromFile);
 
         for(int i = 0; i < inArray.length; i++) {
             if ( tempArray[i] != inArray[i] ) {
@@ -492,7 +507,7 @@ public class NodeThree {
         }
 
         return true;
-    }*/
+    }
 
     /**
      * This function takes in filename of the txt file to be read and returns an array.
