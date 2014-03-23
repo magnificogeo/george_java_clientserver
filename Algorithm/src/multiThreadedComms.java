@@ -30,6 +30,9 @@ public class multiThreadedComms implements Runnable {
             System.out.println("Node " + nodeNum +  " server received:" + clientSentence);
 
             // Upon receiving the start_algorithm command, the thread calls the algorithmStart() method in the respective object
+            /**
+             * This block starts the algorithm in each of the nodes at the appriopriate time.
+             */
             if ( clientSentence.equals("start_algorithm")) {
                 if ( nodeNum == 1 )
 
@@ -80,6 +83,9 @@ public class multiThreadedComms implements Runnable {
                             outToClient.writeBytes(resultThree);
                         }
 
+                        /**
+                         * This block exits the program and stops the execution when received stop_algorithm_all command.
+                         */
                         if(clientSentence.equals("stop_algorithm_all")) {
                             NodeOne.exit();
                             NodeTwo.exit();

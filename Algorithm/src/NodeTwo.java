@@ -230,6 +230,9 @@ public class NodeTwo {
             }
         }
 
+        /**
+         * This code block writes out the output of the files for the power profiles.
+         */
         arrayToFile(optimizedTotalPAR,"serverTwo_profile.txt"); // Power profile that has the lowest PAR
         arrayToFile(optimizedTotalVAR,"TWO_optimized_for_VAR_profile.txt"); // Power profile that has the lowest VAR
         arrayToFile(optimizedFlexOne,"TWO_optimized_FlexOne_profile.txt"); // Power profile for flexible app 1 for minimum PAR
@@ -525,8 +528,7 @@ public class NodeTwo {
         try {
             br = new BufferedReader(new FileReader(fileToBeRead));
         } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            System.out.print("ERROR 1");
+            System.out.print("There is no such file.");
         }
 
         String line;
@@ -543,18 +545,15 @@ public class NodeTwo {
 
             }
         } catch (NumberFormatException e) {
-            // TODO Auto-generated catch block
-            System.out.print("ERROR 2");
+            System.out.print("The input read is of a wrong type.");
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            System.out.print("ERROR 3");
+            System.out.print("The file cannot be read.");
         }
 
         try {
             br.close();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            System.out.print("ERROR 4");
+            System.out.print("The file cannot be closed.");
         }
 
         return arr;
