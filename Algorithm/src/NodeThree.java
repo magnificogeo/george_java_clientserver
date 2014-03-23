@@ -226,7 +226,7 @@ public class NodeThree {
                 sendData(nodeTwoPort,"stop_algorithm_all");
                 System.out.println("terminating condition reached");
             } catch ( Exception e ) {
-                System.out.println("Send data failed!");
+                System.out.println("Server has been terminated.");
             }
         }
 
@@ -292,38 +292,6 @@ public class NodeThree {
     }
 
     /**
-     * This method prints out the array contents. Used for debugging.
-     * @param loadArray
-     * @return String
-     */
-    private static String printArray(double[] loadArray) {
-        String array_string = "[ ";
-        for(int i = 0;i < 24;i++) {
-            array_string += loadArray[i] + " ";
-        }
-        array_string += " ]";
-        return array_string;
-    }
-
-    /**
-     * This method adds two array together and returns an array that is summed.
-     * @param array_1
-     * @param array_2
-     * @return array_sum
-     */
-    private static double[] addTwoArray(double[] array_1, double[] array_2) {
-
-        double[] array_sum = new double[24]; // initialising an empty array
-        int arrayLength = 24;
-
-        for(int i = 0;i < arrayLength; i++) {
-            array_sum[i] = array_1[i] + array_2[i];
-        }
-
-        return array_sum;
-    }
-
-    /**
      * This method adds three array together and returns an array that is summed.
      * @param array_1
      * @param array_2
@@ -337,26 +305,6 @@ public class NodeThree {
 
         for(int i = 0;i < arrayLength; i++) {
             array_sum[i] = array_1[i] + array_2[i] + array_3[i];
-        }
-
-        return array_sum;
-    }
-
-    /**
-     * This method adds four array together and returns an array that is summed.
-     * @param array_1
-     * @param array_2
-     * @param array_3
-     * @param array_4
-     * @return array_sum
-     */
-    private static double[] addFourArray(double[] array_1, double[] array_2, double[] array_3, double[] array_4) {
-
-        double[] array_sum = new double[24]; // initialising an empty array
-        int arrayLength = 24;
-
-        for(int i = 0;i < arrayLength; i++) {
-            array_sum[i] = array_1[i] + array_2[i] + array_3[i] + array_4[i];
         }
 
         return array_sum;
@@ -395,8 +343,6 @@ public class NodeThree {
             ServerSocket welcomeSocket = new ServerSocket(13000);
 
             while ((i++ < maxConnections || maxConnections == 0)) {
-
-                System.out.println("Instance :" + i);
 
                 Socket connectionSocket = welcomeSocket.accept();
                 multiThreadedComms connection = new multiThreadedComms(connectionSocket,3);
