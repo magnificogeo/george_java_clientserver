@@ -235,8 +235,8 @@ public class NodeOne {
         arrayToFile(optimizedTotalVAR,"ONE_optimized_for_VAR_profile.txt"); // Power profile that has the lowest VAR
         arrayToFile(optimizedFlexOne,"ONE_optimized_FlexOne_profile.txt"); // Power profile for flexible app 1 for minimum PAR
         arrayToFile(optimizedFlexTwo,"ONE_optimized_FlexTwo_profile.txt"); // Power profile for flexible app 2 for minimum PAR
-        arrayToFile(optimizedFlexOneVAR,"ONE_optimizedFlexOne_profile_for_VAR.txt"); // Power profile for flexible app 1 for minimum VAR
-        arrayToFile(optimizedFlexTwoVAR,"ONE_optimizedFlexTwo_profile_for_VAR.txt"); // Power profile for flexible app 2 for minimum VAR
+        arrayToFile(optimizedFlexOneVAR,"ONE_optimized_FlexOne_profile_for_VAR.txt"); // Power profile for flexible app 1 for minimum VAR
+        arrayToFile(optimizedFlexTwoVAR,"ONE_optimized_FlexTwo_profile_for_VAR.txt"); // Power profile for flexible app 2 for minimum VAR
 
     }
 
